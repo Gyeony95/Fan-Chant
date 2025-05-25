@@ -24,7 +24,26 @@ final allSongsProvider = AutoDisposeProvider<List<Song>>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef AllSongsRef = AutoDisposeProviderRef<List<Song>>;
-String _$songRecognitionHash() => r'b0084bf5ed8858e56dba7bb7e4ea974617c1a459';
+String _$favoriteSongsHash() => r'042c682fc7f0c10cff70c1d009479bdff682cb60';
+
+/// 찜한 노래 목록을 제공하는 프로바이더
+///
+/// Copied from [favoriteSongs].
+@ProviderFor(favoriteSongs)
+final favoriteSongsProvider = AutoDisposeProvider<List<Song>>.internal(
+  favoriteSongs,
+  name: r'favoriteSongsProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$favoriteSongsHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef FavoriteSongsRef = AutoDisposeProviderRef<List<Song>>;
+String _$songRecognitionHash() => r'9ea416b24b017ca76c482e30194f9dcf08bafb5d';
 
 /// 노래 인식 상태를 관리하는 프로바이더
 ///

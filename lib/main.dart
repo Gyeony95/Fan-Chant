@@ -5,6 +5,10 @@ import 'package:fan_chant/src/core/theme/app_theme.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:fan_chant/src/config/shazam_config.dart';
 import 'package:fan_chant/src/features/song_recognition/services/shazam_service.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:fan_chant/src/features/song_recognition/models/song.dart';
+import 'package:fan_chant/src/features/song_recognition/services/song_storage_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -14,6 +18,18 @@ void main() async {
     GoogleFonts.notoSans(),
     GoogleFonts.pacifico(),
   ]);
+
+  // Hive 초기화
+  final appDocumentDir = await getApplicationDocumentsDirectory();
+  await Hive.initFlutter(appDocumentDir.path);
+
+  // Hive 어댑터 등록
+  Hive.registerAdapter(SongAdapter());
+  Hive.registerAdapter(LyricLineAdapter());
+  Hive.registerAdapter(LyricTypeAdapter());
+
+  // 저장소 서비스 초기화
+  await SongStorageService().init();
 
   // ShazamKit 초기화 (iOS에서만 동작)
   if (ShazamService.instance.isSupported) {
@@ -61,6 +77,8 @@ class AppLifecycleObserver extends WidgetsBindingObserver {
       // 메인 스레드에서 dispose 호출
       WidgetsBinding.instance.addPostFrameCallback((_) {
         ShazamService.instance.dispose();
+        // Hive 닫기
+        Hive.close();
       });
     }
   }

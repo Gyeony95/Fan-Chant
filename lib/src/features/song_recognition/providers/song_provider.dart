@@ -2,18 +2,29 @@ import 'dart:io';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:fan_chant/src/features/song_recognition/models/song.dart';
 import 'package:fan_chant/src/features/song_recognition/services/shazam_service.dart';
+import 'package:fan_chant/src/features/song_recognition/services/song_storage_service.dart';
 
 part 'song_provider.g.dart';
 
 /// 노래 인식 상태를 관리하는 프로바이더
 @riverpod
 class SongRecognition extends _$SongRecognition {
+  late SongStorageService _storageService;
+
   @override
   SongRecognitionState build() {
+    // 서비스 초기화
+    _storageService = SongStorageService();
+
     // 서비스 콜백 설정
     _setupShazamServiceCallbacks();
 
-    return const SongRecognitionState();
+    // 최근 인식한 노래 목록 로드
+    final recentSongs = _storageService.getRecentSongs();
+
+    return SongRecognitionState(
+      recentSongs: recentSongs,
+    );
   }
 
   /// ShazamService 콜백 설정
@@ -124,19 +135,50 @@ class SongRecognition extends _$SongRecognition {
   }
 
   /// 최근 인식한 노래 목록에 노래 추가
-  void addToRecentSongs(Song song) {
-    // 이미 목록에 있는지 확인
-    final isAlreadyInList = state.recentSongs.any((s) => s.id == song.id);
+  Future<void> addToRecentSongs(Song song) async {
+    // 노래를 저장소에 추가
+    await _storageService.addRecentSong(song);
 
-    if (!isAlreadyInList) {
-      // 최대 5개까지만 유지
-      final updatedList = [song, ...state.recentSongs];
-      if (updatedList.length > 5) {
-        updatedList.removeLast();
-      }
+    // 최근 인식한 노래 목록 갱신
+    final updatedRecentSongs = _storageService.getRecentSongs();
 
-      state = state.copyWith(recentSongs: updatedList);
+    state = state.copyWith(recentSongs: updatedRecentSongs);
+  }
+
+  /// 노래 찜하기 토글
+  Future<void> toggleFavorite(Song song) async {
+    await _storageService.toggleFavorite(song);
+
+    // 최근 인식한 노래 목록 갱신 (찜 상태가 변경되었을 수 있음)
+    final updatedRecentSongs = _storageService.getRecentSongs();
+
+    state = state.copyWith(recentSongs: updatedRecentSongs);
+
+    // 현재 인식된 노래라면 상태 업데이트
+    if (state.recognizedSong?.id == song.id) {
+      final updatedSong = updatedRecentSongs.firstWhere(
+        (s) => s.id == song.id,
+        orElse: () => song..toggleFavorite(), // 목록에 없으면 직접 토글
+      );
+
+      state = state.copyWith(recognizedSong: updatedSong);
     }
+  }
+
+  /// 찜한 노래 목록 가져오기
+  List<Song> getFavoriteSongs() {
+    return _storageService.getFavoriteSongs();
+  }
+
+  /// 노래가 찜 목록에 있는지 확인
+  bool isFavorite(String songId) {
+    return _storageService.isFavorite(songId);
+  }
+
+  /// 최근 인식한 노래 목록 초기화
+  Future<void> clearRecentSongs() async {
+    await _storageService.clearRecentSongs();
+    state = state.copyWith(recentSongs: []);
   }
 
   /// 인식 상태 초기화
@@ -212,4 +254,11 @@ class SongRecognitionState {
 @riverpod
 List<Song> allSongs(AllSongsRef ref) {
   return Song.getSampleSongs();
+}
+
+/// 찜한 노래 목록을 제공하는 프로바이더
+@riverpod
+List<Song> favoriteSongs(FavoriteSongsRef ref) {
+  final songRecognition = ref.watch(songRecognitionProvider.notifier);
+  return songRecognition.getFavoriteSongs();
 }

@@ -291,24 +291,95 @@ class SongRecognitionScreen extends ConsumerWidget {
 
   /// 최근 인식한 노래 목록 위젯
   Widget _buildRecentSongs(BuildContext context, WidgetRef ref) {
-    final songs = Song.getSampleSongs();
+    final recentSongs = ref.watch(songRecognitionProvider).recentSongs;
+
+    if (recentSongs.isEmpty) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SizedBox(height: 20),
+          Text(
+            '최근 인식한 노래',
+            style: AppTextStyles.subtitle,
+          ),
+          const SizedBox(height: 20),
+          Center(
+            child: Column(
+              children: [
+                Icon(
+                  FlutterRemix.music_2_line,
+                  size: 48,
+                  color: AppColors.textLight,
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  '아직 인식한 노래가 없습니다',
+                  style: AppTextStyles.bodyMedium.copyWith(
+                    color: AppColors.textMedium,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      );
+    }
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const SizedBox(height: 20),
-        Text(
-          '최근 인식한 노래',
-          style: AppTextStyles.subtitle,
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              '최근 인식한 노래',
+              style: AppTextStyles.subtitle,
+            ),
+            if (recentSongs.isNotEmpty)
+              TextButton(
+                onPressed: () async {
+                  final result = await showDialog<bool>(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: const Text('목록 초기화'),
+                      content: const Text('최근 인식한 노래 목록을 모두 삭제하시겠습니까?'),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(context, false),
+                          child: const Text('취소'),
+                        ),
+                        TextButton(
+                          onPressed: () => Navigator.pop(context, true),
+                          child: const Text('삭제'),
+                        ),
+                      ],
+                    ),
+                  );
+
+                  if (result == true) {
+                    await ref
+                        .read(songRecognitionProvider.notifier)
+                        .clearRecentSongs();
+                  }
+                },
+                child: Text(
+                  '목록 지우기',
+                  style: AppTextStyles.bodySmall.copyWith(
+                    color: AppColors.textMedium,
+                  ),
+                ),
+              ),
+          ],
         ),
         const SizedBox(height: 12),
         ListView.separated(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
-          itemCount: songs.length,
+          itemCount: recentSongs.length,
           separatorBuilder: (context, index) => const SizedBox(height: 8),
           itemBuilder: (context, index) {
-            final song = songs[index];
+            final song = recentSongs[index];
             return _buildSongItem(context, ref, song);
           },
         ),
@@ -318,6 +389,9 @@ class SongRecognitionScreen extends ConsumerWidget {
 
   /// 노래 아이템 위젯
   Widget _buildSongItem(BuildContext context, WidgetRef ref, Song song) {
+    final notifier = ref.watch(songRecognitionProvider.notifier);
+    final isFavorite = song.isFavorite;
+
     return InkWell(
       onTap: () => _onSongSelected(context, ref, song),
       borderRadius: BorderRadius.circular(AppDimensions.borderRadius),
@@ -366,6 +440,22 @@ class SongRecognitionScreen extends ConsumerWidget {
                 ),
               ),
             ),
+
+            // 찜 아이콘
+            IconButton(
+              onPressed: () async {
+                await notifier.toggleFavorite(song);
+              },
+              icon: Icon(
+                isFavorite ? FlutterRemix.heart_fill : FlutterRemix.heart_line,
+                color: isFavorite ? Colors.red : AppColors.textLight,
+                size: 22,
+              ),
+              padding: EdgeInsets.zero,
+              constraints: const BoxConstraints(),
+            ),
+
+            const SizedBox(width: 8),
 
             // 화살표 아이콘
             Icon(
@@ -459,7 +549,7 @@ class SongRecognitionScreen extends ConsumerWidget {
       BuildContext context, WidgetRef ref, Song song) async {
     final notifier = ref.read(songRecognitionProvider.notifier);
     notifier.selectSong(song);
-    notifier.addToRecentSongs(song);
+    await notifier.addToRecentSongs(song);
     await AppRoutes.navigateToSongDetail(context, song);
   }
 }
