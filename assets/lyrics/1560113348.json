@@ -9,126 +9,229 @@
   "hasFanChant": true,
   "lyrics": [
     {
-      "text": "세상의 모서리에 홀로 서 있어도",
+      "text": "세상의 모서리 구부정하게 커버린",
       "type": "artist",
       "startTime": 0,
-      "endTime": 4
+      "endTime": 5
     },
     {
-      "text": "(아이유! 아이유!)",
-      "type": "fan",
-      "startTime": 4,
-      "endTime": 8
-    },
-    {
-      "text": "외롭기만 한 바보는 아니야",
+      "text": "골칫거리 outsider",
       "type": "artist",
-      "startTime": 8,
-      "endTime": 12
+      "startTime": 6,
+      "endTime": 10
     },
     {
-      "text": "(박수 박수 박수)",
-      "type": "fan",
-      "startTime": 12,
-      "endTime": 16
-    },
-    {
-      "text": "네가 있는 그 곳이 어디든",
+      "text": "걸음걸이, 옷차림 이어폰 너머, playlist",
       "type": "artist",
-      "startTime": 16,
-      "endTime": 20
+      "startTime": 11,
+      "endTime": 15
     },
     {
-      "text": "(응원봉 흔들기)",
-      "type": "fan",
+      "text": "음악까지 다 minor",
+      "type": "artist",
+      "startTime": 15,
+      "endTime": 19
+    },
+    {
+      "text": "넌 모르지 떨군 고개 위",
+      "type": "artist",
       "startTime": 20,
       "endTime": 24
     },
     {
-      "text": "그냥 설 수 있다면",
+      "text": "환한 빛 조명이 (어딜 비추는지?)",
       "type": "artist",
       "startTime": 24,
-      "endTime": 28
+      "endTime": 29
     },
     {
-      "text": "(유애나! 유애나!)",
-      "type": "fan",
-      "startTime": 28,
-      "endTime": 32
-    },
-    {
-      "text": "You're my celebrity",
+      "text": "느려도 좋으니 결국 알게 되길",
       "type": "artist",
-      "startTime": 32,
-      "endTime": 36,
+      "startTime": 29,
+      "endTime": 34
+    },
+    {
+      "text": "The one and only, you are my celebrity",
+      "type": "artist",
+      "startTime": 34,
+      "endTime": 39,
       "isHighlighted": true
     },
     {
-      "text": "(Celebrity! Celebrity!)",
-      "type": "fan",
-      "startTime": 36,
-      "endTime": 40,
-      "isHighlighted": true
-    },
-    {
-      "text": "잊지마 넌 흐린 어둠 사이",
+      "text": "잊지 마, 넌 흐린 어둠 사이",
       "type": "artist",
-      "startTime": 40,
+      "startTime": 39,
       "endTime": 44
     },
     {
-      "text": "(손하트 만들기)",
-      "type": "fan",
-      "startTime": 44,
-      "endTime": 48
-    },
-    {
-      "text": "빛나는 별 하나라는 걸",
+      "text": "왼손으로 그린 별 하나",
       "type": "artist",
-      "startTime": 48,
-      "endTime": 52
+      "startTime": 44,
+      "endTime": 49
     },
     {
-      "text": "(응원봉 위로 들기)",
-      "type": "fan",
-      "startTime": 52,
+      "text": "보이니 그 유일함이 얼마나 아름다운지 말야",
+      "type": "artist",
+      "startTime": 49,
       "endTime": 56
     },
     {
-      "text": "달라 달라 넌 달라 달라",
+      "text": "You are my celebrity",
       "type": "artist",
       "startTime": 56,
-      "endTime": 60
+      "endTime": 59,
+      "isHighlighted": true
     },
     {
-      "text": "(아이유 사랑해요!)",
-      "type": "fan",
-      "startTime": 60,
-      "endTime": 64
-    },
-    {
-      "text": "머리부터 발끝까지",
+      "text": "Celebrity",
       "type": "artist",
-      "startTime": 64,
-      "endTime": 68
+      "startTime": 66,
+      "endTime": 68,
+      "isHighlighted": true
     },
     {
-      "text": "(응원봉 흔들기)",
-      "type": "fan",
-      "startTime": 68,
-      "endTime": 72
-    },
-    {
-      "text": "그 누구도 너 대신 할 수 없어",
+      "text": "You are my celebrity",
       "type": "artist",
-      "startTime": 72,
-      "endTime": 76
-    },
-    {
-      "text": "(유애나! 유애나!)",
-      "type": "fan",
       "startTime": 76,
-      "endTime": 80
+      "endTime": 78,
+      "isHighlighted": true
+    },
+    {
+      "text": "지쳐버린 표정 마치 전원을 꺼놓은 듯이",
+      "type": "artist",
+      "startTime": 78,
+      "endTime": 82
+    },
+    {
+      "text": "심장소린 too quiet",
+      "type": "artist",
+      "startTime": 82,
+      "endTime": 87
+    },
+    {
+      "text": "네가 가진 반짝거림 상상력, identity",
+      "type": "artist",
+      "startTime": 87,
+      "endTime": 92
+    },
+    {
+      "text": "까지 모조리 diet",
+      "type": "artist",
+      "startTime": 92,
+      "endTime": 95
+    },
+    {
+      "text": "넌 모르지 아직 못다 핀",
+      "type": "artist",
+      "startTime": 97,
+      "endTime": 101
+    },
+    {
+      "text": "널 위해 쓰여진 (오래된 사랑시)",
+      "type": "artist",
+      "startTime": 101,
+      "endTime": 106
+    },
+    {
+      "text": "헤매도 좋으니 웃음 짓게 되길",
+      "type": "artist",
+      "startTime": 106,
+      "endTime": 110
+    },
+    {
+      "text": "The one and only, you are my celebrity",
+      "type": "artist",
+      "startTime": 110,
+      "endTime": 116,
+      "isHighlighted": true
+    },
+    {
+      "text": "잊지 마, 넌 흐린 어둠 사이",
+      "type": "artist",
+      "startTime": 116,
+      "endTime": 121
+    },
+    {
+      "text": "왼손으로 그린 별 하나",
+      "type": "artist",
+      "startTime": 121,
+      "endTime": 126
+    },
+    {
+      "text": "보이니 그 유일함이 얼마나 아름다운지 말야",
+      "type": "artist",
+      "startTime": 126,
+      "endTime": 133
+    },
+    {
+      "text": "You are my celebrity",
+      "type": "artist",
+      "startTime": 133,
+      "endTime": 135,
+      "isHighlighted": true
+    },
+    {
+      "text": "발자국마다 이어진 별자리",
+      "type": "artist",
+      "startTime": 136,
+      "endTime": 140
+    },
+    {
+      "text": "그 서투른 걸음이 새겨놓은 밑그림",
+      "type": "artist",
+      "startTime": 140,
+      "endTime": 145
+    },
+    {
+      "text": "오롯이 너를 만나러 가는 길",
+      "type": "artist",
+      "startTime": 145,
+      "endTime": 149
+    },
+    {
+      "text": "그리로 가면 돼 점선을 따라",
+      "type": "artist",
+      "startTime": 149,
+      "endTime": 154
+    },
+    {
+      "text": "잊지 마, 이 오랜 겨울 사이",
+      "type": "artist",
+      "startTime": 154,
+      "endTime": 159
+    },
+    {
+      "text": "언 틈으로 피울 꽃 하나",
+      "type": "artist",
+      "startTime": 159,
+      "endTime": 164
+    },
+    {
+      "text": "보이니 하루 뒤 봄이 얼마나 아름다울지 말야",
+      "type": "artist",
+      "startTime": 164,
+      "endTime": 172
+    },
+    {
+      "text": "You are my celebrity",
+      "type": "artist",
+      "startTime": 172,
+      "endTime": 174,
+      "isHighlighted": true
+    },
+    {
+      "text": "Celebrity",
+      "type": "artist",
+      "startTime": 181,
+      "endTime": 183,
+      "isHighlighted": true
+    },
+    {
+      "text": "You are my celebrity",
+      "type": "artist",
+      "startTime": 191,
+      "endTime": 193,
+      "isHighlighted": true
     }
   ]
 } 

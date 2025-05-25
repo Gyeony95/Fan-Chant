@@ -255,6 +255,11 @@ class _SongDetailScreenState extends ConsumerState<SongDetailScreen> {
 
   /// 가사 및 응원법 위젯
   Widget _buildLyricsAndChant(int currentLyricIndex) {
+    // 현재 노래 정보 가져오기
+    final currentSong = ref.watch(currentSongProvider);
+    // 현재 노래 또는 원래 노래의 가사 정보 사용
+    final lyrics = currentSong?.lyrics ?? widget.song.lyrics;
+
     return Container(
       margin: const EdgeInsets.symmetric(vertical: AppDimensions.margin),
       padding: const EdgeInsets.all(AppDimensions.padding),
@@ -286,13 +291,26 @@ class _SongDetailScreenState extends ConsumerState<SongDetailScreen> {
           const SizedBox(height: AppDimensions.marginLarge),
 
           // 가사 목록
-          if (widget.song.lyrics != null)
+          if (lyrics != null && lyrics.isNotEmpty)
             ...List.generate(
-              widget.song.lyrics!.length,
+              lyrics.length,
               (index) => _buildLyricItem(
-                widget.song.lyrics![index],
+                lyrics[index],
                 index,
                 isHighlighted: index == currentLyricIndex,
+              ),
+            )
+          else
+            Center(
+              child: Padding(
+                padding: const EdgeInsets.all(AppDimensions.padding),
+                child: Text(
+                  '가사 정보가 없습니다',
+                  style: AppTextStyles.bodyMedium.copyWith(
+                    color: AppColors.textMedium,
+                    fontStyle: FontStyle.italic,
+                  ),
+                ),
               ),
             ),
         ],

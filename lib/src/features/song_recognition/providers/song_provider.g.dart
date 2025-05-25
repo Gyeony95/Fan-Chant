@@ -6,13 +6,13 @@ part of 'song_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$allSongsHash() => r'c8bf3ed81400346f231e71e373a7b28f18c0529d';
+String _$allSongsHash() => r'0e5492826109740f0e7ef85e646e1e29344299c0';
 
 /// 모든 노래 목록을 제공하는 프로바이더
 ///
 /// Copied from [allSongs].
 @ProviderFor(allSongs)
-final allSongsProvider = AutoDisposeProvider<List<Song>>.internal(
+final allSongsProvider = AutoDisposeFutureProvider<List<Song>>.internal(
   allSongs,
   name: r'allSongsProvider',
   debugGetCreateSourceHash:
@@ -23,8 +23,8 @@ final allSongsProvider = AutoDisposeProvider<List<Song>>.internal(
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-typedef AllSongsRef = AutoDisposeProviderRef<List<Song>>;
-String _$favoriteSongsHash() => r'1687f7246a4f0b1f619b96ff514c644dd9ca3d9c';
+typedef AllSongsRef = AutoDisposeFutureProviderRef<List<Song>>;
+String _$favoriteSongsHash() => r'ac3fdb3394e17c4ec74d95c4d2db49f9f353c68c';
 
 /// 찜한 노래 목록을 제공하는 프로바이더
 ///
@@ -43,7 +43,7 @@ final favoriteSongsProvider = AutoDisposeProvider<List<Song>>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef FavoriteSongsRef = AutoDisposeProviderRef<List<Song>>;
-String _$songRecognitionHash() => r'25972ee9b5bf5459be8d71773d0595b77b54e0a9';
+String _$songRecognitionHash() => r'ad2b0e1ae91765620b244c5f2feb41dcd68a37e6';
 
 /// 노래 인식 상태를 관리하는 프로바이더
 ///

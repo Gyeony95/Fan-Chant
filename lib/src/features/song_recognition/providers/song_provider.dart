@@ -1,8 +1,10 @@
 import 'dart:io';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:fan_chant/src/features/song_recognition/models/song.dart';
 import 'package:fan_chant/src/features/song_recognition/services/shazam_service.dart';
 import 'package:fan_chant/src/features/song_recognition/services/song_storage_service.dart';
+import 'package:fan_chant/src/features/song_recognition/services/lyrics_service.dart';
 
 part 'song_provider.g.dart';
 
@@ -89,7 +91,7 @@ class SongRecognition extends _$SongRecognition {
           );
         }
       }
-      // iOS가 아닌 경우 샘플 데이터 사용 (시뮬레이션)
+      // iOS가 아닌 경우 테스트 데이터 사용 (시뮬레이션)
       else {
         // 프로그레스 시뮬레이션 (0.0 ~ 1.0)
         for (int i = 1; i <= 5; i++) {
@@ -112,16 +114,23 @@ class SongRecognition extends _$SongRecognition {
           await Future.delayed(const Duration(milliseconds: 300));
         }
 
-        // 샘플 노래 목록에서 두 번째 노래 (Hype Boy)를 선택하여 인식 성공으로 처리
-        final songs = Song.getSampleSongs();
-        final recognizedSong = songs[1]; // Hype Boy
+        // 테스트용 Celebrity 노래 정보 로드
+        final recognizedSong =
+            await LyricsService.instance.loadSongByAppleMusicId('1560113348');
 
-        state = state.copyWith(
-          status: SongRecognitionStatus.success,
-          recognizedSong: recognizedSong,
-          statusMessage: '인식 성공!',
-          recognitionProgress: 1.0,
-        );
+        if (recognizedSong != null) {
+          state = state.copyWith(
+            status: SongRecognitionStatus.success,
+            recognizedSong: recognizedSong,
+            statusMessage: '인식 성공!',
+            recognitionProgress: 1.0,
+          );
+        } else {
+          state = state.copyWith(
+            status: SongRecognitionStatus.failure,
+            statusMessage: '인식 실패. 다시 시도해주세요.',
+          );
+        }
       }
     } catch (e) {
       print('노래 인식 오류: $e');
@@ -282,13 +291,25 @@ class SongRecognitionState {
 
 /// 모든 노래 목록을 제공하는 프로바이더
 @riverpod
-List<Song> allSongs(AllSongsRef ref) {
-  return Song.getSampleSongs();
+Future<List<Song>> allSongs(AllSongsRef ref) async {
+  // 가사 서비스로부터 이용 가능한 모든 노래 ID 가져오기
+  final lyricsIds = await LyricsService.instance.getAllAvailableLyricsIds();
+  final songs = <Song>[];
+
+  // 각 ID에 해당하는 노래 정보 로드
+  for (final id in lyricsIds) {
+    final song = await LyricsService.instance.loadSongByAppleMusicId(id);
+    if (song != null) {
+      songs.add(song);
+    }
+  }
+
+  return songs;
 }
 
 /// 찜한 노래 목록을 제공하는 프로바이더
 @riverpod
-List<Song> favoriteSongs(FavoriteSongsRef ref) {
+List<Song> favoriteSongs(Ref ref) {
   // songRecognitionProvider 상태가 변경될 때마다 다시 계산
   ref.watch(songRecognitionProvider);
 
