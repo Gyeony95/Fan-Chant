@@ -5,6 +5,7 @@ import 'package:fan_chant/src/core/theme/app_dimensions.dart';
 import 'package:fan_chant/src/core/theme/text_styles.dart';
 import 'package:fan_chant/src/features/song_recognition/models/song.dart';
 import 'package:fan_chant/src/features/song_detail/providers/song_detail_provider.dart';
+import 'package:fan_chant/src/features/song_recognition/providers/song_provider.dart';
 import 'package:flutter_remix/flutter_remix.dart';
 
 /// 노래 상세 정보 화면
@@ -38,6 +39,10 @@ class _SongDetailScreenState extends ConsumerState<SongDetailScreen> {
   Widget build(BuildContext context) {
     final playbackState = ref.watch(playbackStateProvider);
     final currentLyricIndex = ref.watch(lyricsHighlightProvider);
+    final currentSong = ref.watch(currentSongProvider);
+
+    // 현재 노래의 찜 상태를 가져옴
+    final isFavorite = currentSong?.isFavorite ?? widget.song.isFavorite;
 
     return Scaffold(
       body: SafeArea(
@@ -78,6 +83,14 @@ class _SongDetailScreenState extends ConsumerState<SongDetailScreen> {
 
   /// 상단 앱바 위젯
   Widget _buildAppBar(BuildContext context) {
+    // 현재 노래 가져오기
+    final currentSong = ref.watch(currentSongProvider);
+    final songRecognition = ref.watch(songRecognitionProvider.notifier);
+
+    // 찜 상태 가져오기 (현재 노래가 null이면 widget.song 사용)
+    final song = currentSong ?? widget.song;
+    final isFavorite = song.isFavorite;
+
     return Container(
       height: AppDimensions.appBarHeight,
       padding:
@@ -109,8 +122,34 @@ class _SongDetailScreenState extends ConsumerState<SongDetailScreen> {
 
           // 좋아요 버튼
           IconButton(
-            onPressed: () {},
-            icon: const Icon(FlutterRemix.heart_line),
+            onPressed: () async {
+              // 찜 상태 토글
+              await songRecognition.toggleFavorite(song);
+
+              // 현재 노래 상태 업데이트
+              if (currentSong != null) {
+                final updatedSong = Song(
+                  id: currentSong.id,
+                  title: currentSong.title,
+                  artist: currentSong.artist,
+                  album: currentSong.album,
+                  albumCoverUrl: currentSong.albumCoverUrl,
+                  releaseDate: currentSong.releaseDate,
+                  genre: currentSong.genre,
+                  hasFanChant: currentSong.hasFanChant,
+                  lyrics: currentSong.lyrics,
+                  isFavorite: !isFavorite, // 상태 반전
+                  recognizedAt: currentSong.recognizedAt,
+                );
+                ref
+                    .read(currentSongProvider.notifier)
+                    .setCurrentSong(updatedSong);
+              }
+            },
+            icon: Icon(
+              isFavorite ? FlutterRemix.heart_fill : FlutterRemix.heart_line,
+              color: isFavorite ? Colors.red : AppColors.textLight,
+            ),
           ),
         ],
       ),

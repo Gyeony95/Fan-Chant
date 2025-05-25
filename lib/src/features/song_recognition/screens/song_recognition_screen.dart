@@ -17,6 +17,12 @@ class SongRecognitionScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final recognitionState = ref.watch(songRecognitionProvider);
 
+    // 화면이 다시 표시될 때마다 최근 인식한 노래 목록 갱신
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final notifier = ref.read(songRecognitionProvider.notifier);
+      notifier.refreshRecentSongs();
+    });
+
     return Scaffold(
       body: SafeArea(
         child: Column(

@@ -145,6 +145,14 @@ class SongRecognition extends _$SongRecognition {
     state = state.copyWith(recentSongs: updatedRecentSongs);
   }
 
+  /// 최근 인식한 노래 목록 새로고침
+  Future<void> refreshRecentSongs() async {
+    // 최근 인식한 노래 목록 다시 로드
+    final updatedRecentSongs = _storageService.getRecentSongs();
+
+    state = state.copyWith(recentSongs: updatedRecentSongs);
+  }
+
   /// 노래 찜하기 토글
   Future<void> toggleFavorite(Song song) async {
     await _storageService.toggleFavorite(song);
