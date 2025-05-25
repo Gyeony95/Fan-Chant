@@ -50,6 +50,10 @@ class Song {
   @HiveField(10)
   final DateTime recognizedAt;
 
+  /// Apple Music ID
+  @HiveField(11)
+  final String? appleMusicId;
+
   Song({
     String? id,
     required this.title,
@@ -62,6 +66,7 @@ class Song {
     this.lyrics,
     this.isFavorite = false,
     DateTime? recognizedAt,
+    this.appleMusicId,
   })  : this.id = id ?? const Uuid().v4(),
         this.recognizedAt = recognizedAt ?? DateTime.now();
 
@@ -83,28 +88,78 @@ class Song {
         releaseDate: '2023년 5월 15일',
         hasFanChant: true,
         lyrics: [
-          LyricLine(text: '세상의 모서리에 홀로 서 있어도', type: LyricType.artist, time: 0),
-          LyricLine(text: '(아이유! 아이유!)', type: LyricType.fan, time: 4),
-          LyricLine(text: '외롭기만 한 바보는 아니야', type: LyricType.artist, time: 8),
-          LyricLine(text: '(박수 박수 박수)', type: LyricType.fan, time: 12),
-          LyricLine(text: '네가 있는 그 곳이 어디든', type: LyricType.artist, time: 16),
-          LyricLine(text: '(응원봉 흔들기)', type: LyricType.fan, time: 20),
-          LyricLine(text: '그냥 설 수 있다면', type: LyricType.artist, time: 24),
-          LyricLine(text: '(유애나! 유애나!)', type: LyricType.fan, time: 28),
+          LyricLine(
+              text: '세상의 모서리에 홀로 서 있어도',
+              type: LyricType.artist,
+              startTime: 0,
+              endTime: 4),
+          LyricLine(
+              text: '(아이유! 아이유!)',
+              type: LyricType.fan,
+              startTime: 4,
+              endTime: 8),
+          LyricLine(
+              text: '외롭기만 한 바보는 아니야',
+              type: LyricType.artist,
+              startTime: 8,
+              endTime: 12),
+          LyricLine(
+              text: '(박수 박수 박수)',
+              type: LyricType.fan,
+              startTime: 12,
+              endTime: 16),
+          LyricLine(
+              text: '네가 있는 그 곳이 어디든',
+              type: LyricType.artist,
+              startTime: 16,
+              endTime: 20),
+          LyricLine(
+              text: '(응원봉 흔들기)',
+              type: LyricType.fan,
+              startTime: 20,
+              endTime: 24),
+          LyricLine(
+              text: '그냥 설 수 있다면',
+              type: LyricType.artist,
+              startTime: 24,
+              endTime: 28),
+          LyricLine(
+              text: '(유애나! 유애나!)',
+              type: LyricType.fan,
+              startTime: 28,
+              endTime: 32),
           LyricLine(
               text: 'You\'re my celebrity',
               type: LyricType.artist,
-              time: 32,
+              startTime: 32,
+              endTime: 36,
               isHighlighted: true),
           LyricLine(
               text: '(Celebrity! Celebrity!)',
               type: LyricType.fan,
-              time: 36,
+              startTime: 36,
+              endTime: 40,
               isHighlighted: true),
-          LyricLine(text: '잊지마 넌 흐린 어둠 사이', type: LyricType.artist, time: 40),
-          LyricLine(text: '(손하트 만들기)', type: LyricType.fan, time: 44),
-          LyricLine(text: '빛나는 별 하나라는 걸', type: LyricType.artist, time: 48),
-          LyricLine(text: '(응원봉 위로 들기)', type: LyricType.fan, time: 52),
+          LyricLine(
+              text: '잊지마 넌 흐린 어둠 사이',
+              type: LyricType.artist,
+              startTime: 40,
+              endTime: 44),
+          LyricLine(
+              text: '(손하트 만들기)',
+              type: LyricType.fan,
+              startTime: 44,
+              endTime: 48),
+          LyricLine(
+              text: '빛나는 별 하나라는 걸',
+              type: LyricType.artist,
+              startTime: 48,
+              endTime: 52),
+          LyricLine(
+              text: '(응원봉 위로 들기)',
+              type: LyricType.fan,
+              startTime: 52,
+              endTime: 56),
         ],
       ),
       Song(
@@ -117,32 +172,93 @@ class Song {
         releaseDate: '2022년 8월 1일',
         hasFanChant: true,
         lyrics: [
-          LyricLine(text: '1, 2, 3, 4', type: LyricType.artist, time: 0),
-          LyricLine(text: '너 없인 시간이 달려가질 않아', type: LyricType.artist, time: 4),
-          LyricLine(text: '(박수 박수 박수)', type: LyricType.fan, time: 8),
-          LyricLine(text: '하루가 몇 년이 된 것만 같아', type: LyricType.artist, time: 12),
-          LyricLine(text: '(뉴진스! 뉴진스!)', type: LyricType.fan, time: 16),
           LyricLine(
-              text: '얼마나 기다려야 내 맘이 전해질까', type: LyricType.artist, time: 20),
-          LyricLine(text: '(손하트 만들기)', type: LyricType.fan, time: 24),
+              text: '1, 2, 3, 4',
+              type: LyricType.artist,
+              startTime: 0,
+              endTime: 4),
+          LyricLine(
+              text: '너 없인 시간이 달려가질 않아',
+              type: LyricType.artist,
+              startTime: 4,
+              endTime: 8),
+          LyricLine(
+              text: '(박수 박수 박수)',
+              type: LyricType.fan,
+              startTime: 8,
+              endTime: 12),
+          LyricLine(
+              text: '하루가 몇 년이 된 것만 같아',
+              type: LyricType.artist,
+              startTime: 12,
+              endTime: 16),
+          LyricLine(
+              text: '(뉴진스! 뉴진스!)',
+              type: LyricType.fan,
+              startTime: 16,
+              endTime: 20),
+          LyricLine(
+              text: '얼마나 기다려야 내 맘이 전해질까',
+              type: LyricType.artist,
+              startTime: 20,
+              endTime: 24),
+          LyricLine(
+              text: '(손하트 만들기)',
+              type: LyricType.fan,
+              startTime: 24,
+              endTime: 28),
           LyricLine(
               text: 'Baby, you\'re my Hype Boy',
               type: LyricType.artist,
-              time: 28,
+              startTime: 28,
+              endTime: 32,
               isHighlighted: true),
           LyricLine(
               text: '(Hype Boy! Hype Boy!)',
               type: LyricType.fan,
-              time: 32,
+              startTime: 32,
+              endTime: 36,
               isHighlighted: true),
-          LyricLine(text: '내 기분을 다 가져가', type: LyricType.artist, time: 36),
-          LyricLine(text: '(응원봉 흔들기)', type: LyricType.fan, time: 40),
-          LyricLine(text: '분명 네가 있으면', type: LyricType.artist, time: 44),
-          LyricLine(text: '(하이! 하이!)', type: LyricType.fan, time: 48),
-          LyricLine(text: '하루가 즐거워져', type: LyricType.artist, time: 52),
-          LyricLine(text: '(응원봉 좌우로 흔들기)', type: LyricType.fan, time: 56),
-          LyricLine(text: '모든 게 다 신기해', type: LyricType.artist, time: 60),
-          LyricLine(text: '(뉴진스 사랑해요!)', type: LyricType.fan, time: 64),
+          LyricLine(
+              text: '내 기분을 다 가져가',
+              type: LyricType.artist,
+              startTime: 36,
+              endTime: 40),
+          LyricLine(
+              text: '(응원봉 흔들기)',
+              type: LyricType.fan,
+              startTime: 40,
+              endTime: 44),
+          LyricLine(
+              text: '분명 네가 있으면',
+              type: LyricType.artist,
+              startTime: 44,
+              endTime: 48),
+          LyricLine(
+              text: '(하이! 하이!)',
+              type: LyricType.fan,
+              startTime: 48,
+              endTime: 52),
+          LyricLine(
+              text: '하루가 즐거워져',
+              type: LyricType.artist,
+              startTime: 52,
+              endTime: 56),
+          LyricLine(
+              text: '(응원봉 좌우로 흔들기)',
+              type: LyricType.fan,
+              startTime: 56,
+              endTime: 60),
+          LyricLine(
+              text: '모든 게 다 신기해',
+              type: LyricType.artist,
+              startTime: 60,
+              endTime: 64),
+          LyricLine(
+              text: '(뉴진스 사랑해요!)',
+              type: LyricType.fan,
+              startTime: 64,
+              endTime: 68),
         ],
       ),
       Song(
@@ -158,47 +274,84 @@ class Song {
           LyricLine(
               text: 'Cause I-I-I\'m in the stars tonight',
               type: LyricType.artist,
-              time: 0),
-          LyricLine(text: '(BTS! BTS!)', type: LyricType.fan, time: 4),
+              startTime: 0,
+              endTime: 4),
+          LyricLine(
+              text: '(BTS! BTS!)',
+              type: LyricType.fan,
+              startTime: 4,
+              endTime: 8),
           LyricLine(
               text: 'So watch me bring the fire and set the night alight',
               type: LyricType.artist,
-              time: 8),
-          LyricLine(text: '(아미! 아미!)', type: LyricType.fan, time: 12),
+              startTime: 8,
+              endTime: 12),
+          LyricLine(
+              text: '(아미! 아미!)',
+              type: LyricType.fan,
+              startTime: 12,
+              endTime: 16),
           LyricLine(
               text: 'Shoes on, get up in the morn\'',
               type: LyricType.artist,
-              time: 16),
-          LyricLine(text: '(박수 박수 박수)', type: LyricType.fan, time: 20),
+              startTime: 16,
+              endTime: 20),
+          LyricLine(
+              text: '(박수 박수 박수)',
+              type: LyricType.fan,
+              startTime: 20,
+              endTime: 24),
           LyricLine(
               text: 'Cup of milk, let\'s rock and roll',
               type: LyricType.artist,
-              time: 24),
-          LyricLine(text: '(응원봉 흔들기)', type: LyricType.fan, time: 28),
+              startTime: 24,
+              endTime: 28),
+          LyricLine(
+              text: '(응원봉 흔들기)',
+              type: LyricType.fan,
+              startTime: 28,
+              endTime: 32),
           LyricLine(
               text: 'King Kong, kick the drum',
               type: LyricType.artist,
-              time: 32),
-          LyricLine(text: '(방탄! 방탄!)', type: LyricType.fan, time: 36),
+              startTime: 32,
+              endTime: 36),
+          LyricLine(
+              text: '(방탄! 방탄!)',
+              type: LyricType.fan,
+              startTime: 36,
+              endTime: 40),
           LyricLine(
               text: 'Rolling on like a Rolling Stone',
               type: LyricType.artist,
-              time: 40),
-          LyricLine(text: '(아미 사랑해요!)', type: LyricType.fan, time: 44),
+              startTime: 40,
+              endTime: 44),
+          LyricLine(
+              text: '(아미 사랑해요!)',
+              type: LyricType.fan,
+              startTime: 44,
+              endTime: 48),
           LyricLine(
               text: 'Sing song when I\'m walking home',
               type: LyricType.artist,
-              time: 48),
-          LyricLine(text: '(응원봉 좌우로 흔들기)', type: LyricType.fan, time: 52),
+              startTime: 48,
+              endTime: 52),
+          LyricLine(
+              text: '(응원봉 좌우로 흔들기)',
+              type: LyricType.fan,
+              startTime: 52,
+              endTime: 56),
           LyricLine(
               text: 'Jump up to the top, LeBron',
               type: LyricType.artist,
-              time: 56,
+              startTime: 56,
+              endTime: 60,
               isHighlighted: true),
           LyricLine(
               text: '(Dynamite! Dynamite!)',
               type: LyricType.fan,
-              time: 60,
+              startTime: 60,
+              endTime: 64,
               isHighlighted: true),
         ],
       ),
@@ -229,18 +382,28 @@ class LyricLine {
   @HiveField(1)
   final LyricType type;
 
-  /// 타임라인 (초 단위)
+  /// 시작 시간 (초 단위)
   @HiveField(2)
-  final int time;
+  final int startTime;
+
+  /// 종료 시간 (초 단위)
+  @HiveField(3)
+  final int endTime;
 
   /// 강조 표시 여부
-  @HiveField(3)
+  @HiveField(4)
   final bool isHighlighted;
 
   LyricLine({
     required this.text,
     required this.type,
-    required this.time,
+    required this.startTime,
+    this.endTime = 0, // 기본값은 0으로 설정
     this.isHighlighted = false,
   });
+
+  /// 현재 재생 시간에 이 가사가 해당하는지 확인
+  bool isActive(int currentTime) {
+    return currentTime >= startTime && currentTime < endTime;
+  }
 }

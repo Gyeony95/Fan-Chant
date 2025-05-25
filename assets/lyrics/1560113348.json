@@ -1,0 +1,134 @@
+{
+  "appleMusicId": "1560113348",
+  "title": "Celebrity",
+  "artist": "아이유 (IU)",
+  "album": "IU 5th Album 'LILAC'",
+  "releaseDate": "2023년 5월 15일",
+  "albumCoverUrl": "https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/35/9f/83/359f83b3-1423-3153-1641-98e948b7fc65/cover_-_EDAM_5_LILAC.jpg/800x800bb.jpg",
+  "genre": "K-Pop",
+  "hasFanChant": true,
+  "lyrics": [
+    {
+      "text": "세상의 모서리에 홀로 서 있어도",
+      "type": "artist",
+      "startTime": 0,
+      "endTime": 4
+    },
+    {
+      "text": "(아이유! 아이유!)",
+      "type": "fan",
+      "startTime": 4,
+      "endTime": 8
+    },
+    {
+      "text": "외롭기만 한 바보는 아니야",
+      "type": "artist",
+      "startTime": 8,
+      "endTime": 12
+    },
+    {
+      "text": "(박수 박수 박수)",
+      "type": "fan",
+      "startTime": 12,
+      "endTime": 16
+    },
+    {
+      "text": "네가 있는 그 곳이 어디든",
+      "type": "artist",
+      "startTime": 16,
+      "endTime": 20
+    },
+    {
+      "text": "(응원봉 흔들기)",
+      "type": "fan",
+      "startTime": 20,
+      "endTime": 24
+    },
+    {
+      "text": "그냥 설 수 있다면",
+      "type": "artist",
+      "startTime": 24,
+      "endTime": 28
+    },
+    {
+      "text": "(유애나! 유애나!)",
+      "type": "fan",
+      "startTime": 28,
+      "endTime": 32
+    },
+    {
+      "text": "You're my celebrity",
+      "type": "artist",
+      "startTime": 32,
+      "endTime": 36,
+      "isHighlighted": true
+    },
+    {
+      "text": "(Celebrity! Celebrity!)",
+      "type": "fan",
+      "startTime": 36,
+      "endTime": 40,
+      "isHighlighted": true
+    },
+    {
+      "text": "잊지마 넌 흐린 어둠 사이",
+      "type": "artist",
+      "startTime": 40,
+      "endTime": 44
+    },
+    {
+      "text": "(손하트 만들기)",
+      "type": "fan",
+      "startTime": 44,
+      "endTime": 48
+    },
+    {
+      "text": "빛나는 별 하나라는 걸",
+      "type": "artist",
+      "startTime": 48,
+      "endTime": 52
+    },
+    {
+      "text": "(응원봉 위로 들기)",
+      "type": "fan",
+      "startTime": 52,
+      "endTime": 56
+    },
+    {
+      "text": "달라 달라 넌 달라 달라",
+      "type": "artist",
+      "startTime": 56,
+      "endTime": 60
+    },
+    {
+      "text": "(아이유 사랑해요!)",
+      "type": "fan",
+      "startTime": 60,
+      "endTime": 64
+    },
+    {
+      "text": "머리부터 발끝까지",
+      "type": "artist",
+      "startTime": 64,
+      "endTime": 68
+    },
+    {
+      "text": "(응원봉 흔들기)",
+      "type": "fan",
+      "startTime": 68,
+      "endTime": 72
+    },
+    {
+      "text": "그 누구도 너 대신 할 수 없어",
+      "type": "artist",
+      "startTime": 72,
+      "endTime": 76
+    },
+    {
+      "text": "(유애나! 유애나!)",
+      "type": "fan",
+      "startTime": 76,
+      "endTime": 80
+    }
+  ]
+} 

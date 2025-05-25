@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:fan_chant/src/features/song_recognition/models/song.dart';
 import 'package:flutter_shazam_kit/flutter_shazam_kit.dart';
+import 'package:fan_chant/src/features/song_recognition/services/lyrics_service.dart';
 
 /// ShazamKit을 사용하여 노래를 인식하는 서비스
 class ShazamService {
@@ -12,6 +13,9 @@ class ShazamService {
 
   /// Flutter ShazamKit 인스턴스
   final FlutterShazamKit _shazamKit = FlutterShazamKit();
+
+  /// 가사 서비스
+  final LyricsService _lyricsService = LyricsService.instance;
 
   /// 녹음 상태 콜백
   Function(String)? onStatusUpdate;
@@ -43,26 +47,46 @@ class ShazamService {
   /// ShazamKit 설정
   void _setupShazamKit() {
     // 매칭 결과 리스너 설정
-    _shazamKit.onMatchResultDiscovered((result) {
+    _shazamKit.onMatchResultDiscovered((result) async {
       // 메인 스레드에서 결과 처리
-      WidgetsBinding.instance.addPostFrameCallback((_) {
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
         if (result is Matched) {
           // 매치된 경우
           final mediaItems = result.mediaItems;
           if (mediaItems.isNotEmpty) {
             final mediaItem = mediaItems.first;
-            final song = Song(
-              id: mediaItem.shazamId ?? '',
-              title: mediaItem.title,
-              artist: mediaItem.artist,
-              album: '알 수 없는 앨범',
-              albumCoverUrl: mediaItem.artworkUrl,
-              releaseDate: '',
-              hasFanChant: true, // 임시 값
-            );
 
-            // 노래 정보 반환
-            _matchResult = song;
+            // Apple Music ID 가져오기
+            final appleMusicId =
+                _getAppleMusicIdFromUrl(mediaItem.appleMusicUrl);
+
+            // 가사 정보가 있는지 확인
+            Song? songWithLyrics;
+            if (appleMusicId != null) {
+              // 가사 정보 로드 시도
+              songWithLyrics =
+                  await _lyricsService.loadSongByAppleMusicId(appleMusicId);
+            }
+
+            // 가사 정보가 있으면 해당 정보 사용, 없으면 기본 정보 사용
+            if (songWithLyrics != null) {
+              _matchResult = songWithLyrics;
+            } else {
+              // 기본 정보로 Song 객체 생성
+              final song = Song(
+                id: mediaItem.shazamId ?? '',
+                title: mediaItem.title,
+                artist: mediaItem.artist,
+                album: mediaItem.subtitle ?? '알 수 없는 앨범',
+                albumCoverUrl: mediaItem.artworkUrl,
+                releaseDate: '',
+                hasFanChant: false, // 가사 정보가 없으므로 false
+                appleMusicId: appleMusicId, // Apple Music ID 저장
+              );
+
+              // 노래 정보 반환
+              _matchResult = song;
+            }
           }
         } else if (result is NoMatch) {
           // 매치 없음
@@ -100,6 +124,38 @@ class ShazamService {
     });
   }
 
+  /// Apple Music URL에서 ID 추출
+  String? _getAppleMusicIdFromUrl(String? url) {
+    if (url == null || url.isEmpty) return null;
+
+    try {
+      // URL 형식: https://music.apple.com/kr/album/celebrity/1560113132?i=1560113348
+      // 또는: https://music.apple.com/album/celebrity/1560113132?i=1560113348
+      // i= 다음의 숫자가 appleMusicId
+
+      final uri = Uri.parse(url);
+      final iParam = uri.queryParameters['i'];
+
+      if (iParam != null && iParam.isNotEmpty) {
+        return iParam;
+      }
+
+      // 다른 형식일 경우 URL의 마지막 경로 부분 추출
+      final pathSegments = uri.pathSegments;
+      if (pathSegments.isNotEmpty) {
+        final lastSegment = pathSegments.last;
+        if (lastSegment.isNotEmpty && int.tryParse(lastSegment) != null) {
+          return lastSegment;
+        }
+      }
+
+      return null;
+    } catch (e) {
+      print('Apple Music ID 추출 오류: $e');
+      return null;
+    }
+  }
+
   /// 개발자 토큰 설정
   void setDeveloperToken(String token) {
     _developerToken = token;
@@ -127,35 +183,55 @@ class ShazamService {
       final completer = Completer<Song?>();
 
       // 매치 결과 리스너 설정 (새로운 리스너)
-      final resultListener = (result) {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
+      resultListener(result) async {
+        WidgetsBinding.instance.addPostFrameCallback((_) async {
           if (result is Matched) {
             final mediaItems = result.mediaItems;
             if (mediaItems.isNotEmpty) {
               final mediaItem = mediaItems.first;
-              final song = Song(
-                id: mediaItem.shazamId ?? '',
-                title: mediaItem.title,
-                artist: mediaItem.artist,
-                album: '알 수 없는 앨범',
-                albumCoverUrl: mediaItem.artworkUrl,
-                releaseDate: '',
-                hasFanChant: true, // 임시 값
-              );
 
-              // 노래 정보 설정 및 완료 처리
-              _matchResult = song;
+              // Apple Music ID 가져오기
+              final appleMusicId =
+                  _getAppleMusicIdFromUrl(mediaItem.appleMusicUrl);
+
+              // 가사 정보가 있는지 확인
+              Song? songWithLyrics;
+              if (appleMusicId != null) {
+                // 가사 정보 로드 시도
+                songWithLyrics =
+                    await _lyricsService.loadSongByAppleMusicId(appleMusicId);
+              }
+
+              // 가사 정보가 있으면 해당 정보 사용, 없으면 기본 정보 사용
+              if (songWithLyrics != null) {
+                _matchResult = songWithLyrics;
+              } else {
+                // 기본 정보로 Song 객체 생성
+                final song = Song(
+                  id: mediaItem.shazamId ?? '',
+                  title: mediaItem.title,
+                  artist: mediaItem.artist,
+                  album: mediaItem.subtitle ?? '알 수 없는 앨범',
+                  albumCoverUrl: mediaItem.artworkUrl,
+                  releaseDate: '',
+                  hasFanChant: false, // 가사 정보가 없으므로 false
+                  appleMusicId: appleMusicId, // Apple Music ID 저장
+                );
+
+                // 노래 정보 설정
+                _matchResult = song;
+              }
 
               // 인식이 완료되었으므로 즉시 종료 처리
               if (!completer.isCompleted) {
-                completer.complete(song);
+                completer.complete(_matchResult);
               }
             }
           } else if (result is NoMatch && !completer.isCompleted) {
             // 15초가 지난 후 매치가 없으면 자동으로 null 반환됨 (처리하지 않음)
           }
         });
-      };
+      }
 
       // 임시 리스너 등록
       _shazamKit.onMatchResultDiscovered(resultListener);

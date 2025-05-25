@@ -4,6 +4,7 @@ import 'package:fan_chant/src/config/routes.dart';
 import 'package:fan_chant/src/core/theme/colors.dart';
 import 'package:fan_chant/src/core/theme/app_dimensions.dart';
 import 'package:fan_chant/src/core/theme/text_styles.dart';
+import 'package:fan_chant/src/core/widgets/safe_image.dart';
 import 'package:fan_chant/src/features/song_recognition/models/song.dart';
 import 'package:fan_chant/src/features/song_recognition/providers/song_provider.dart';
 import 'package:flutter_remix/flutter_remix.dart';
@@ -132,15 +133,14 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
         child: Row(
           children: [
             // 앨범 커버
-            ClipRRect(
+            SafeImage(
+              imageUrl: song.albumCoverUrl,
+              width: 56,
+              height: 56,
               borderRadius:
                   BorderRadius.circular(AppDimensions.borderRadiusSmall),
-              child: Image.network(
-                song.albumCoverUrl,
-                width: 56,
-                height: 56,
-                fit: BoxFit.cover,
-              ),
+              placeholderIcon: FlutterRemix.music_2_line,
+              placeholderColor: AppColors.primary.withOpacity(0.7),
             ),
 
             // 노래 정보
@@ -157,6 +157,8 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
                       style: AppTextStyles.bodyLarge.copyWith(
                         fontWeight: FontWeight.w500,
                       ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
                     const SizedBox(height: 4),
                     Text(
@@ -164,6 +166,8 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
                       style: AppTextStyles.bodyMedium.copyWith(
                         color: AppColors.textMedium,
                       ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ],
                 ),
@@ -182,18 +186,22 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
               icon: const Icon(
                 FlutterRemix.heart_fill,
                 color: Colors.red,
-                size: 22,
+                size: 18,
               ),
               padding: EdgeInsets.zero,
-              constraints: const BoxConstraints(),
+              constraints: const BoxConstraints(
+                minWidth: 24,
+                minHeight: 24,
+              ),
             ),
 
-            const SizedBox(width: 8),
+            const SizedBox(width: 4),
 
             // 화살표 아이콘
             Icon(
               FlutterRemix.arrow_right_s_line,
               color: AppColors.textLight,
+              size: 18,
             ),
           ],
         ),

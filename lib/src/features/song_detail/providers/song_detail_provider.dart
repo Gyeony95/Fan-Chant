@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:fan_chant/src/features/song_recognition/models/song.dart';
 
@@ -20,23 +21,68 @@ class CurrentSong extends _$CurrentSong {
 /// 현재 재생 상태를 관리하는 프로바이더
 @riverpod
 class PlaybackState extends _$PlaybackState {
+  Timer? _timer;
+
   @override
   PlaybackStateModel build() {
+    // dispose 시 타이머 취소 및 재생 상태 초기화
+    ref.onDispose(() {
+      if (_timer != null) {
+        _timer!.cancel();
+        _timer = null;
+      }
+      // 마지막 상태가 재생 중이었다면 재생 중지 상태로 설정
+      // (이는 새로운 리스너에게 알리지 않고 내부적으로만 상태를 변경)
+      if (state.isPlaying) {
+        state = state.copyWith(isPlaying: false);
+      }
+    });
+
     return const PlaybackStateModel();
   }
 
   /// 재생/일시정지 토글
   void togglePlayPause() {
-    state = state.copyWith(isPlaying: !state.isPlaying);
+    if (state.isPlaying) {
+      pause();
+    } else {
+      play();
+    }
   }
 
   /// 재생 시작
   void play() {
+    // 이미 재생 중이면 리턴
+    if (state.isPlaying) return;
+
     state = state.copyWith(isPlaying: true);
+
+    // 재생 중일 때 1초마다 현재 위치 업데이트
+    _timer = Timer.periodic(const Duration(milliseconds: 200), (_) {
+      // 재생 중이 아니면 타이머 취소
+      if (!state.isPlaying) {
+        _timer?.cancel();
+        return;
+      }
+
+      // 현재 위치 업데이트
+      final newPosition =
+          state.currentPosition + const Duration(milliseconds: 200);
+
+      // 총 재생 시간을 초과하면 처음으로 돌아감
+      if (newPosition >= state.totalDuration) {
+        state =
+            state.copyWith(currentPosition: Duration.zero, isPlaying: false);
+        _timer?.cancel();
+      } else {
+        state = state.copyWith(currentPosition: newPosition);
+      }
+    });
   }
 
   /// 일시정지
   void pause() {
+    _timer?.cancel();
     state = state.copyWith(isPlaying: false);
   }
 
@@ -107,6 +153,11 @@ class PlaybackStateModel {
     final seconds = totalDuration.inSeconds % 60;
     return '$minutes:${seconds.toString().padLeft(2, '0')}';
   }
+
+  /// 현재 위치를 초 단위로 반환
+  int get currentSeconds {
+    return currentPosition.inSeconds;
+  }
 }
 
 /// 가사의 현재 강조 표시 위치를 관리하는 프로바이더
@@ -114,25 +165,41 @@ class PlaybackStateModel {
 class LyricsHighlight extends _$LyricsHighlight {
   @override
   int build() {
-    return 0; // 첫 번째 가사 인덱스
-  }
+    // 현재 재생 시간 모니터링
+    final playbackState = ref.watch(playbackStateProvider);
+    final currentSong = ref.watch(currentSongProvider);
 
-  /// 현재 강조 표시할 가사 인덱스 설정
-  void setHighlightIndex(int index) {
-    state = index;
-  }
+    // 현재 재생 시간
+    final currentSeconds = playbackState.currentSeconds;
 
-  /// 다음 가사로 이동
-  void nextLine(int maxIndex) {
-    if (state < maxIndex) {
-      state += 1;
+    // 현재 노래가 없으면 0 반환
+    if (currentSong == null || currentSong.lyrics == null) {
+      return -1;
     }
+
+    // 현재 시간에 해당하는 가사 찾기
+    for (int i = 0; i < currentSong.lyrics!.length; i++) {
+      final lyric = currentSong.lyrics![i];
+      if (lyric.startTime <= currentSeconds && currentSeconds < lyric.endTime) {
+        return i;
+      }
+    }
+
+    // 해당하는 가사가 없으면 -1 반환
+    return -1;
   }
 
-  /// 이전 가사로 이동
-  void previousLine() {
-    if (state > 0) {
-      state -= 1;
+  /// 특정 가사 인덱스로 이동
+  void jumpToLyric(int index) {
+    final currentSong = ref.read(currentSongProvider);
+    if (currentSong?.lyrics != null &&
+        index >= 0 &&
+        index < currentSong!.lyrics!.length) {
+      final startTime = currentSong.lyrics![index].startTime;
+      // 해당 가사의 시작 시간으로 플레이어 이동
+      ref
+          .read(playbackStateProvider.notifier)
+          .seekTo(Duration(seconds: startTime));
     }
   }
 }

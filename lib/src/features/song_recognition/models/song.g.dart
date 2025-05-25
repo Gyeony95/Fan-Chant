@@ -28,13 +28,14 @@ class SongAdapter extends TypeAdapter<Song> {
       lyrics: (fields[8] as List?)?.cast<LyricLine>(),
       isFavorite: fields[9] as bool,
       recognizedAt: fields[10] as DateTime?,
+      appleMusicId: fields[11] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, Song obj) {
     writer
-      ..writeByte(11)
+      ..writeByte(12)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -56,7 +57,9 @@ class SongAdapter extends TypeAdapter<Song> {
       ..writeByte(9)
       ..write(obj.isFavorite)
       ..writeByte(10)
-      ..write(obj.recognizedAt);
+      ..write(obj.recognizedAt)
+      ..writeByte(11)
+      ..write(obj.appleMusicId);
   }
 
   @override
@@ -83,22 +86,25 @@ class LyricLineAdapter extends TypeAdapter<LyricLine> {
     return LyricLine(
       text: fields[0] as String,
       type: fields[1] as LyricType,
-      time: fields[2] as int,
-      isHighlighted: fields[3] as bool,
+      startTime: fields[2] as int,
+      endTime: fields[3] as int,
+      isHighlighted: fields[4] as bool,
     );
   }
 
   @override
   void write(BinaryWriter writer, LyricLine obj) {
     writer
-      ..writeByte(4)
+      ..writeByte(5)
       ..writeByte(0)
       ..write(obj.text)
       ..writeByte(1)
       ..write(obj.type)
       ..writeByte(2)
-      ..write(obj.time)
+      ..write(obj.startTime)
       ..writeByte(3)
+      ..write(obj.endTime)
+      ..writeByte(4)
       ..write(obj.isHighlighted);
   }
 

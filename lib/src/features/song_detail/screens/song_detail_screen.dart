@@ -3,9 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fan_chant/src/core/theme/colors.dart';
 import 'package:fan_chant/src/core/theme/app_dimensions.dart';
 import 'package:fan_chant/src/core/theme/text_styles.dart';
+import 'package:fan_chant/src/core/widgets/safe_image.dart';
 import 'package:fan_chant/src/features/song_recognition/models/song.dart';
 import 'package:fan_chant/src/features/song_detail/providers/song_detail_provider.dart';
 import 'package:fan_chant/src/features/song_recognition/providers/song_provider.dart';
+import 'package:fan_chant/src/features/song_recognition/services/lyrics_service.dart';
 import 'package:flutter_remix/flutter_remix.dart';
 
 /// 노래 상세 정보 화면
@@ -28,11 +30,42 @@ class _SongDetailScreenState extends ConsumerState<SongDetailScreen> {
   void initState() {
     super.initState();
     // 현재 노래 설정
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(currentSongProvider.notifier).setCurrentSong(widget.song);
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      // 가사 정보 로드
+      Song songToUse = widget.song;
+
+      // appleMusicId가 있는 경우 JSON에서 가사 정보 로드 시도
+      if (widget.song.appleMusicId != null) {
+        final songWithLyrics = await LyricsService.instance
+            .loadSongByAppleMusicId(widget.song.appleMusicId!);
+        if (songWithLyrics != null) {
+          // 찜 상태는 유지
+          songWithLyrics.isFavorite = widget.song.isFavorite;
+          songToUse = songWithLyrics;
+        }
+      }
+
+      // 현재 노래 설정
+      ref.read(currentSongProvider.notifier).setCurrentSong(songToUse);
+
+      // 가사에 맞게 재생 시간 설정 (마지막 가사의 종료 시간으로 설정)
+      if (songToUse.lyrics != null && songToUse.lyrics!.isNotEmpty) {
+        final lastLyric = songToUse.lyrics!.last;
+        final totalDuration =
+            Duration(seconds: lastLyric.endTime + 2); // 마지막 가사 이후 2초 추가
+        ref.read(playbackStateProvider.notifier).setDuration(totalDuration);
+      }
+
       // 재생 시작
       ref.read(playbackStateProvider.notifier).play();
     });
+  }
+
+  @override
+  void dispose() {
+    // 여기서 ref를 사용하지 않습니다.
+    // PlaybackStateProvider는 자체적으로 onDispose 시 타이머를 취소합니다.
+    super.dispose();
   }
 
   @override
@@ -164,14 +197,13 @@ class _SongDetailScreenState extends ConsumerState<SongDetailScreen> {
     return Row(
       children: [
         // 앨범 커버
-        ClipRRect(
+        SafeImage(
+          imageUrl: widget.song.albumCoverUrl,
+          width: 80,
+          height: 80,
           borderRadius: BorderRadius.circular(AppDimensions.borderRadius),
-          child: Image.network(
-            widget.song.albumCoverUrl,
-            width: 80,
-            height: 80,
-            fit: BoxFit.cover,
-          ),
+          placeholderIcon: FlutterRemix.music_2_line,
+          placeholderColor: AppColors.primary.withOpacity(0.7),
         ),
 
         const SizedBox(width: AppDimensions.padding),
@@ -184,6 +216,8 @@ class _SongDetailScreenState extends ConsumerState<SongDetailScreen> {
               Text(
                 widget.song.title,
                 style: AppTextStyles.titleLarge,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
               const SizedBox(height: 4),
               Text(
@@ -191,6 +225,8 @@ class _SongDetailScreenState extends ConsumerState<SongDetailScreen> {
                 style: AppTextStyles.bodyLarge.copyWith(
                   color: AppColors.textMedium,
                 ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
               const SizedBox(height: 6),
               Container(
@@ -255,6 +291,7 @@ class _SongDetailScreenState extends ConsumerState<SongDetailScreen> {
               widget.song.lyrics!.length,
               (index) => _buildLyricItem(
                 widget.song.lyrics![index],
+                index,
                 isHighlighted: index == currentLyricIndex,
               ),
             ),
@@ -285,64 +322,86 @@ class _SongDetailScreenState extends ConsumerState<SongDetailScreen> {
   }
 
   /// 가사 아이템 위젯
-  Widget _buildLyricItem(LyricLine lyric, {bool isHighlighted = false}) {
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        vertical: 8,
-      ),
-      decoration: isHighlighted || lyric.isHighlighted
-          ? BoxDecoration(
-              color: AppColors.primary.withOpacity(0.1),
-              border: Border(
-                left: BorderSide(
-                  color: AppColors.primary,
-                  width: 3,
+  Widget _buildLyricItem(LyricLine lyric, int index,
+      {bool isHighlighted = false}) {
+    // 노래 파트 (가수/팬) 색상 설정
+    final Color primaryColor = lyric.type == LyricType.artist
+        ? AppColors.primary
+        : AppColors.secondary;
+
+    return GestureDetector(
+      onTap: () {
+        // 가사 터치 시 해당 시간으로 이동
+        ref.read(lyricsHighlightProvider.notifier).jumpToLyric(index);
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(
+          vertical: 8,
+        ),
+        decoration: isHighlighted
+            ? BoxDecoration(
+                color: primaryColor.withOpacity(0.1),
+                border: Border(
+                  left: BorderSide(
+                    color: primaryColor,
+                    width: 3,
+                  ),
                 ),
-              ),
-              borderRadius: const BorderRadius.only(
-                topRight: Radius.circular(4),
-                bottomRight: Radius.circular(4),
-              ),
-            )
-          : null,
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // 가수 파트
-          if (lyric.type == LyricType.artist)
-            Expanded(
-              child: Padding(
-                padding: EdgeInsets.only(
-                  left: isHighlighted || lyric.isHighlighted ? 8 : 0,
+                borderRadius: const BorderRadius.only(
+                  topRight: Radius.circular(4),
+                  bottomRight: Radius.circular(4),
                 ),
+              )
+            : null,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // 가수 파트
+            if (lyric.type == LyricType.artist)
+              Expanded(
+                child: Padding(
+                  padding: EdgeInsets.only(
+                    left: isHighlighted ? 8 : 0,
+                  ),
+                  child: Text(
+                    lyric.text,
+                    style: isHighlighted
+                        ? AppTextStyles.highlightedLyrics
+                        : AppTextStyles.artistLyrics,
+                    textAlign: TextAlign.left,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              )
+            else
+              const Spacer(),
+
+            // 재생 시간 표시 (디버깅용, 필요 시 주석 해제)
+            // Text(
+            //   '${lyric.startTime}s',
+            //   style: TextStyle(fontSize: 10, color: Colors.grey),
+            // ),
+
+            // 팬 파트
+            if (lyric.type == LyricType.fan)
+              Expanded(
                 child: Text(
                   lyric.text,
-                  style: isHighlighted || lyric.isHighlighted
-                      ? AppTextStyles.highlightedLyrics
-                      : AppTextStyles.artistLyrics,
-                  textAlign: TextAlign.left,
+                  style: isHighlighted
+                      ? AppTextStyles.highlightedLyrics.copyWith(
+                          color: AppColors.secondary,
+                        )
+                      : AppTextStyles.fanLyrics,
+                  textAlign: TextAlign.right,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                 ),
-              ),
-            )
-          else
-            const Spacer(),
-
-          // 팬 파트
-          if (lyric.type == LyricType.fan)
-            Expanded(
-              child: Text(
-                lyric.text,
-                style: isHighlighted || lyric.isHighlighted
-                    ? AppTextStyles.highlightedLyrics.copyWith(
-                        color: AppColors.secondary,
-                      )
-                    : AppTextStyles.fanLyrics,
-                textAlign: TextAlign.right,
-              ),
-            )
-          else
-            const Spacer(),
-        ],
+              )
+            else
+              const Spacer(),
+          ],
+        ),
       ),
     );
   }

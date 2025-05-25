@@ -24,7 +24,7 @@ final allSongsProvider = AutoDisposeProvider<List<Song>>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef AllSongsRef = AutoDisposeProviderRef<List<Song>>;
-String _$favoriteSongsHash() => r'042c682fc7f0c10cff70c1d009479bdff682cb60';
+String _$favoriteSongsHash() => r'1687f7246a4f0b1f619b96ff514c644dd9ca3d9c';
 
 /// 찜한 노래 목록을 제공하는 프로바이더
 ///
@@ -43,7 +43,7 @@ final favoriteSongsProvider = AutoDisposeProvider<List<Song>>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef FavoriteSongsRef = AutoDisposeProviderRef<List<Song>>;
-String _$songRecognitionHash() => r'9ea416b24b017ca76c482e30194f9dcf08bafb5d';
+String _$songRecognitionHash() => r'25972ee9b5bf5459be8d71773d0595b77b54e0a9';
 
 /// 노래 인식 상태를 관리하는 프로바이더
 ///

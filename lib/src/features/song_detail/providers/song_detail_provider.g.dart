@@ -23,7 +23,7 @@ final currentSongProvider =
 );
 
 typedef _$CurrentSong = AutoDisposeNotifier<Song?>;
-String _$playbackStateHash() => r'2e0d7e4fae14d2531e01d3bec466f039ecf9cc0c';
+String _$playbackStateHash() => r'8ead24299261035270ec680d07beeecf0f907b2e';
 
 /// 현재 재생 상태를 관리하는 프로바이더
 ///
@@ -41,7 +41,7 @@ final playbackStateProvider =
 );
 
 typedef _$PlaybackState = AutoDisposeNotifier<PlaybackStateModel>;
-String _$lyricsHighlightHash() => r'956172584ab3e06c7ab30b2c4aafc67146057480';
+String _$lyricsHighlightHash() => r'cb72891dc7b7b8a5ef6b38305acab958ef9d6a5b';
 
 /// 가사의 현재 강조 표시 위치를 관리하는 프로바이더
 ///
