@@ -1,3 +1,5 @@
+import 'dart:io';
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fan_chant/src/config/routes.dart';
@@ -79,11 +81,7 @@ class _SongRecognitionScreenState extends ConsumerState<SongRecognitionScreen>
                           const SizedBox(height: 10),
 
                           // 인식 상태
-                          if (recognitionState.status ==
-                                  SongRecognitionStatus.recognizing ||
-                              recognitionState.status ==
-                                  SongRecognitionStatus.failure)
-                            _buildRecognitionStatus(),
+                          _buildRecognitionStatus(),
 
                           // 최근 인식한 노래
                           _buildRecentSongs(context, ref),
@@ -219,7 +217,36 @@ class _SongRecognitionScreenState extends ConsumerState<SongRecognitionScreen>
         final recognitionState = ref.watch(songRecognitionProvider);
         final progress = recognitionState.recognitionProgress;
         final message = recognitionState.statusMessage ?? '노래 인식 중...';
+        final isSuccess =
+            recognitionState.status == SongRecognitionStatus.success;
+        final isRecognizing =
+            recognitionState.status == SongRecognitionStatus.recognizing;
+        final isFailure =
+            recognitionState.status == SongRecognitionStatus.failure;
 
+        // 인식 중이거나 실패 상태가 아니면 아무것도 표시하지 않음
+        if (!isRecognizing && !isFailure) {
+          return const SizedBox.shrink();
+        }
+
+        // 인식 성공 시 UI 변경
+        if (isSuccess) {
+          return Container(
+            padding: const EdgeInsets.symmetric(vertical: 10),
+            child: const Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  FlutterRemix.check_line,
+                  size: 48,
+                  color: Colors.green,
+                ),
+              ],
+            ),
+          );
+        }
+
+        // 인식 중 또는 실패 시 UI
         return Container(
           constraints: const BoxConstraints(maxHeight: 200),
           padding: const EdgeInsets.symmetric(vertical: 10),
@@ -255,17 +282,7 @@ class _SongRecognitionScreenState extends ConsumerState<SongRecognitionScreen>
                     ),
 
                     // 사운드 웨이브 효과
-                    SizedBox(
-                      height: 30,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        mainAxisSize: MainAxisSize.min,
-                        children: List.generate(
-                          8, // 웨이브 라인 개수 축소
-                          (index) => _buildSoundWaveLine(index),
-                        ),
-                      ),
-                    ),
+                    const SoundWaveEffect(),
                   ],
                 ),
               ),
@@ -285,28 +302,6 @@ class _SongRecognitionScreenState extends ConsumerState<SongRecognitionScreen>
           ),
         );
       },
-    );
-  }
-
-  /// 사운드 웨이브 라인 위젯
-  Widget _buildSoundWaveLine(int index) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 2),
-      child: TweenAnimationBuilder<double>(
-        tween: Tween(begin: 0.3, end: 1.0),
-        duration: Duration(milliseconds: 600 + (index * 100) % 400),
-        curve: Curves.easeInOut,
-        builder: (context, value, child) {
-          return Container(
-            width: 3,
-            height: 24 * value,
-            decoration: BoxDecoration(
-              color: AppColors.primary,
-              borderRadius: BorderRadius.circular(1.5),
-            ),
-          );
-        },
-      ),
     );
   }
 
@@ -492,17 +487,48 @@ class _SongRecognitionScreenState extends ConsumerState<SongRecognitionScreen>
   /// 노래 인식 시작 메서드
   Future<void> _startRecognition(WidgetRef ref, BuildContext context) async {
     final notifier = ref.read(songRecognitionProvider.notifier);
+
+    // 상태 변경 감시를 위한 리스너 설정
+    late ProviderSubscription<SongRecognitionState> subscription;
+
+    subscription = ref.listenManual(
+      songRecognitionProvider,
+      (previous, next) async {
+        // 인식 상태가 변경된 경우에만 처리
+        if (previous?.status != next.status) {
+          if (next.status == SongRecognitionStatus.success &&
+              next.recognizedSong != null) {
+            // 인식 성공 시 바로 처리
+            subscription.close(); // 리스너 정리
+
+            // 최근 인식 목록에 추가
+            await notifier.addToRecentSongs(next.recognizedSong!);
+
+            // 잠시 후 상세 화면으로 이동 (UI 반응을 위해 약간의 지연)
+            await Future.delayed(const Duration(milliseconds: 300));
+            if (mounted) {
+              await AppRoutes.navigateToSongDetail(
+                  context, next.recognizedSong!);
+            }
+          } else if (next.status == SongRecognitionStatus.failure) {
+            // 인식 실패 시 처리
+            subscription.close(); // 리스너 정리
+            await Future.delayed(const Duration(milliseconds: 300));
+            if (mounted) {
+              await AppRoutes.navigateToRecognitionFailed(context);
+            }
+          }
+        }
+      },
+    );
+
+    // 인식 시작
     await notifier.startRecognition();
 
-    final state = ref.read(songRecognitionProvider);
-    if (state.status == SongRecognitionStatus.success &&
-        state.recognizedSong != null) {
-      // 인식된 노래가 있으면 상세 화면으로 이동
-      notifier.addToRecentSongs(state.recognizedSong!);
-      await AppRoutes.navigateToSongDetail(context, state.recognizedSong!);
-    } else if (state.status == SongRecognitionStatus.failure) {
-      // 인식 실패 시 처리
-      await AppRoutes.navigateToRecognitionFailed(context);
+    // 인식이 시작되지 않았거나 이미 완료되었다면 리스너 정리
+    final currentState = ref.read(songRecognitionProvider);
+    if (currentState.status != SongRecognitionStatus.recognizing) {
+      subscription.close();
     }
   }
 
@@ -519,6 +545,87 @@ class _SongRecognitionScreenState extends ConsumerState<SongRecognitionScreen>
     notifier.selectSong(song);
     await notifier.addToRecentSongs(song);
     await AppRoutes.navigateToSongDetail(context, song);
+  }
+}
+
+/// 사운드 웨이브 효과 위젯
+class SoundWaveEffect extends StatelessWidget {
+  const SoundWaveEffect({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 30,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        children: List.generate(
+          8, // 웨이브 라인 개수
+          (index) => SoundWaveLine(index: index),
+        ),
+      ),
+    );
+  }
+}
+
+/// 사운드 웨이브 라인을 위한 StatefulWidget
+class SoundWaveLine extends StatefulWidget {
+  final int index;
+
+  const SoundWaveLine({Key? key, required this.index}) : super(key: key);
+
+  @override
+  State<SoundWaveLine> createState() => _SoundWaveLineState();
+}
+
+class _SoundWaveLineState extends State<SoundWaveLine> {
+  late double _height;
+  late Duration _duration;
+  Timer? _timer;
+
+  @override
+  void initState() {
+    super.initState();
+    // 초기 높이 설정 (0.3 ~ 0.9 사이의 랜덤값)
+    _height = 0.3 + (widget.index * 0.06) % 0.6;
+
+    // 애니메이션 지속 시간 (300ms ~ 800ms 사이의 랜덤값)
+    _duration = Duration(milliseconds: 300 + (widget.index * 70) % 500);
+
+    // 타이머 설정 - 지속적으로 높이 변경
+    _timer = Timer.periodic(
+        Duration(milliseconds: _duration.inMilliseconds + 50), (_) {
+      if (mounted) {
+        setState(() {
+          // 새로운 높이 값 (0.3 ~ 1.0 사이)
+          _height = 0.3 +
+              (0.7 * (DateTime.now().millisecondsSinceEpoch % 1000) / 1000);
+        });
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 2),
+      child: AnimatedContainer(
+        duration: _duration,
+        curve: Curves.easeInOut,
+        width: 3,
+        height: 24 * _height,
+        decoration: BoxDecoration(
+          color: AppColors.primary,
+          borderRadius: BorderRadius.circular(1.5),
+        ),
+      ),
+    );
   }
 }
 

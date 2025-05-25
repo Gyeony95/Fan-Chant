@@ -123,9 +123,46 @@ class ShazamService {
       // 이전 결과 초기화
       _matchResult = null;
 
+      // 인식 완료 컴플리터 - 노래가 인식되면 완료
+      final completer = Completer<Song?>();
+
+      // 매치 결과 리스너 설정 (새로운 리스너)
+      final resultListener = (result) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (result is Matched) {
+            final mediaItems = result.mediaItems;
+            if (mediaItems.isNotEmpty) {
+              final mediaItem = mediaItems.first;
+              final song = Song(
+                id: mediaItem.shazamId ?? '',
+                title: mediaItem.title,
+                artist: mediaItem.artist,
+                album: '알 수 없는 앨범',
+                albumCoverUrl: mediaItem.artworkUrl,
+                releaseDate: '',
+                hasFanChant: true, // 임시 값
+              );
+
+              // 노래 정보 설정 및 완료 처리
+              _matchResult = song;
+
+              // 인식이 완료되었으므로 즉시 종료 처리
+              if (!completer.isCompleted) {
+                completer.complete(song);
+              }
+            }
+          } else if (result is NoMatch && !completer.isCompleted) {
+            // 15초가 지난 후 매치가 없으면 자동으로 null 반환됨 (처리하지 않음)
+          }
+        });
+      };
+
+      // 임시 리스너 등록
+      _shazamKit.onMatchResultDiscovered(resultListener);
+
       // 진행 상황 업데이트 설정
       double progress = 0.0;
-      const duration = 15.0; // 15초 인식
+      const maxDuration = 15.0; // 최대 15초 인식
 
       // 진행 상황 타이머
       if (_timerSubscription != null) {
@@ -136,7 +173,7 @@ class ShazamService {
       _timerStream =
           Stream.periodic(const Duration(seconds: 1), (i) => i).take(15);
       _timerSubscription = _timerStream!.listen((i) {
-        progress = (i + 1) / duration;
+        progress = (i + 1) / maxDuration;
         onProgressUpdate?.call(progress);
 
         // 상태 메시지 업데이트
@@ -152,14 +189,30 @@ class ShazamService {
       // 마이크로 감지 시작
       await _shazamKit.startDetectionWithMicrophone();
 
-      // 15초 후 결과 확인 및 감지 종료
-      await Future.delayed(const Duration(seconds: 15));
+      // 타임아웃 설정 (15초)
+      Timer(const Duration(seconds: 15), () {
+        if (!completer.isCompleted) {
+          completer.complete(_matchResult);
+        }
+      });
+
+      // 결과 기다리기 (최대 15초 또는 인식 완료까지)
+      final result = await completer.future;
+
+      // 타이머 취소
+      if (_timerSubscription != null) {
+        await _timerSubscription!.cancel();
+        _timerSubscription = null;
+      }
 
       // 감지 종료
       await _shazamKit.endDetectionWithMicrophone();
 
+      // 원래 리스너 복구
+      _setupShazamKit();
+
       // 결과 반환
-      return _matchResult;
+      return result;
     } on PlatformException catch (e) {
       // 인식 실패 시 예외 처리
       print('노래 인식 실패: ${e.message}');

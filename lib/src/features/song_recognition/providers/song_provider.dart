@@ -91,8 +91,26 @@ class SongRecognition extends _$SongRecognition {
       }
       // iOS가 아닌 경우 샘플 데이터 사용 (시뮬레이션)
       else {
-        // 실제로는 오디오 인식 API를 호출하지만, 여기서는 지연만 시뮬레이션
-        await Future.delayed(const Duration(seconds: 3));
+        // 프로그레스 시뮬레이션 (0.0 ~ 1.0)
+        for (int i = 1; i <= 5; i++) {
+          if (state.status != SongRecognitionStatus.recognizing) {
+            // 사용자가 도중에 취소한 경우
+            break;
+          }
+
+          // 진행 상태 업데이트
+          state = state.copyWith(
+            recognitionProgress: i / 5,
+            statusMessage: i <= 2
+                ? '음악을 들어보는 중...'
+                : i <= 4
+                    ? '인식 중...'
+                    : '거의 완료되었습니다...',
+          );
+
+          // 잠시 대기
+          await Future.delayed(const Duration(milliseconds: 300));
+        }
 
         // 샘플 노래 목록에서 두 번째 노래 (Hype Boy)를 선택하여 인식 성공으로 처리
         final songs = Song.getSampleSongs();
@@ -102,6 +120,7 @@ class SongRecognition extends _$SongRecognition {
           status: SongRecognitionStatus.success,
           recognizedSong: recognizedSong,
           statusMessage: '인식 성공!',
+          recognitionProgress: 1.0,
         );
       }
     } catch (e) {
