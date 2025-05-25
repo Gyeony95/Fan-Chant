@@ -9,6 +9,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:fan_chant/src/features/song_recognition/models/song.dart';
 import 'package:fan_chant/src/features/song_recognition/services/song_storage_service.dart';
+import 'package:fan_chant/src/features/home/screens/home_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -59,7 +60,7 @@ class FanChantApp extends StatelessWidget {
       theme: AppTheme.lightTheme,
       routes: AppRoutes.routes,
       onGenerateRoute: AppRoutes.onGenerateRoute,
-      initialRoute: AppRoutes.recognition,
+      home: const HomeScreen(),
       debugShowCheckedModeBanner: false,
     );
   }

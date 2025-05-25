@@ -9,19 +9,35 @@ import 'package:fan_chant/src/features/song_recognition/providers/song_provider.
 import 'package:flutter_remix/flutter_remix.dart';
 
 /// 노래 인식 화면
-class SongRecognitionScreen extends ConsumerWidget {
+class SongRecognitionScreen extends ConsumerStatefulWidget {
   /// 생성자
   const SongRecognitionScreen({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final recognitionState = ref.watch(songRecognitionProvider);
+  ConsumerState<SongRecognitionScreen> createState() =>
+      _SongRecognitionScreenState();
+}
 
-    // 화면이 다시 표시될 때마다 최근 인식한 노래 목록 갱신
+class _SongRecognitionScreenState extends ConsumerState<SongRecognitionScreen>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
+  @override
+  void initState() {
+    super.initState();
+    // 화면이 처음 로드될 때 한 번만 최근 인식한 노래 목록 갱신
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final notifier = ref.read(songRecognitionProvider.notifier);
-      notifier.refreshRecentSongs();
+      if (mounted) {
+        ref.read(songRecognitionProvider.notifier).refreshRecentSongs();
+      }
     });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    super.build(context); // AutomaticKeepAliveClientMixin 사용 시 필수
+    final recognitionState = ref.watch(songRecognitionProvider);
 
     return Scaffold(
       body: SafeArea(
@@ -81,7 +97,6 @@ class SongRecognitionScreen extends ConsumerWidget {
           ],
         ),
       ),
-      bottomNavigationBar: _buildBottomNavigationBar(),
     );
   }
 
@@ -467,59 +482,6 @@ class SongRecognitionScreen extends ConsumerWidget {
             Icon(
               FlutterRemix.arrow_right_s_line,
               color: AppColors.textLight,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  /// 하단 탭바 위젯
-  Widget _buildBottomNavigationBar() {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border(
-          top: BorderSide(
-            color: Colors.grey.shade200,
-            width: 1,
-          ),
-        ),
-      ),
-      height: AppDimensions.bottomTabBarHeight,
-      child: Row(
-        children: [
-          _buildBottomNavItem(FlutterRemix.mic_line, '인식', isSelected: true),
-          _buildBottomNavItem(FlutterRemix.history_line, '기록'),
-          _buildBottomNavItem(FlutterRemix.user_line, '프로필'),
-        ],
-      ),
-    );
-  }
-
-  /// 하단 탭바 아이템 위젯
-  Widget _buildBottomNavItem(
-    IconData icon,
-    String label, {
-    bool isSelected = false,
-  }) {
-    return Expanded(
-      child: InkWell(
-        onTap: () {},
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              icon,
-              color: isSelected ? AppColors.primary : AppColors.textLight,
-              size: 24,
-            ),
-            const SizedBox(height: 4),
-            Text(
-              label,
-              style: AppTextStyles.labelSmall.copyWith(
-                color: isSelected ? AppColors.primary : AppColors.textLight,
-              ),
             ),
           ],
         ),
