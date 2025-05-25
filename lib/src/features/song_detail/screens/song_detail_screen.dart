@@ -9,6 +9,7 @@ import 'package:fan_chant/src/features/song_detail/providers/song_detail_provide
 import 'package:fan_chant/src/features/song_recognition/providers/song_provider.dart';
 import 'package:fan_chant/src/features/song_recognition/services/lyrics_service.dart';
 import 'package:flutter_remix/flutter_remix.dart';
+import 'dart:math' as math;
 
 /// 노래 상세 정보 화면
 class SongDetailScreen extends ConsumerStatefulWidget {
@@ -26,6 +27,9 @@ class SongDetailScreen extends ConsumerStatefulWidget {
 }
 
 class _SongDetailScreenState extends ConsumerState<SongDetailScreen> {
+  // 가사 스크롤 컨트롤러
+  final ScrollController _lyricsScrollController = ScrollController();
+
   @override
   void initState() {
     super.initState();
@@ -63,8 +67,8 @@ class _SongDetailScreenState extends ConsumerState<SongDetailScreen> {
 
   @override
   void dispose() {
-    // 여기서 ref를 사용하지 않습니다.
-    // PlaybackStateProvider는 자체적으로 onDispose 시 타이머를 취소합니다.
+    // 스크롤 컨트롤러 해제
+    _lyricsScrollController.dispose();
     super.dispose();
   }
 
@@ -262,162 +266,251 @@ class _SongDetailScreenState extends ConsumerState<SongDetailScreen> {
 
     return Container(
       margin: const EdgeInsets.symmetric(vertical: AppDimensions.margin),
-      padding: const EdgeInsets.all(AppDimensions.padding),
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            Colors.black.withOpacity(0.9),
+            AppColors.primary.withOpacity(0.7),
+          ],
+        ),
         borderRadius: BorderRadius.circular(AppDimensions.borderRadius),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.2),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // 제목 및 범례
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                '가사 및 응원법',
-                style: AppTextStyles.subtitle,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(AppDimensions.borderRadius),
+        child: Column(
+          children: [
+            // 상단 제목 및 아티스트 정보
+            Container(
+              padding: const EdgeInsets.all(AppDimensions.padding),
+              decoration: BoxDecoration(
+                color: Colors.black.withOpacity(0.3),
+                border: Border(
+                  bottom: BorderSide(
+                    color: Colors.white.withOpacity(0.1),
+                    width: 1,
+                  ),
+                ),
               ),
-              Row(
+              child: Row(
                 children: [
-                  _buildLegendItem(AppColors.primary, '가수'),
-                  const SizedBox(width: 8),
-                  _buildLegendItem(AppColors.secondary, '팬'),
+                  // 작은 앨범 커버
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(4),
+                    child: SafeImage(
+                      imageUrl: widget.song.albumCoverUrl,
+                      width: 40,
+                      height: 40,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  // 노래 및 아티스트 정보
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          widget.song.title,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          widget.song.artist,
+                          style: TextStyle(
+                            color: Colors.white.withOpacity(0.7),
+                            fontSize: 12,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
+                    ),
+                  ),
                 ],
               ),
-            ],
-          ),
+            ),
 
-          const SizedBox(height: AppDimensions.marginLarge),
-
-          // 가사 목록
-          if (lyrics != null && lyrics.isNotEmpty)
-            ...List.generate(
-              lyrics.length,
-              (index) => _buildLyricItem(
-                lyrics[index],
-                index,
-                isHighlighted: index == currentLyricIndex,
-              ),
-            )
-          else
-            Center(
-              child: Padding(
-                padding: const EdgeInsets.all(AppDimensions.padding),
+            // 가사 내용
+            if (lyrics != null && lyrics.isNotEmpty)
+              SizedBox(
+                height: 380, // 고정 높이 설정
+                child: Stack(
+                  children: [
+                    // 배경 앨범 아트 (흐릿하게)
+                    Positioned.fill(
+                      child: SafeImage(
+                        imageUrl: widget.song.albumCoverUrl,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    // 배경 오버레이
+                    Positioned.fill(
+                      child: Container(
+                        color: Colors.black.withOpacity(0.7),
+                      ),
+                    ),
+                    // 가사 리스트
+                    Positioned.fill(
+                      child: _buildAppleMusicStyleLyrics(
+                          lyrics, currentLyricIndex),
+                    ),
+                  ],
+                ),
+              )
+            else
+              Container(
+                height: 200,
+                alignment: Alignment.center,
                 child: Text(
                   '가사 정보가 없습니다',
-                  style: AppTextStyles.bodyMedium.copyWith(
-                    color: AppColors.textMedium,
+                  style: TextStyle(
+                    color: Colors.white.withOpacity(0.7),
+                    fontSize: 16,
                     fontStyle: FontStyle.italic,
                   ),
                 ),
               ),
-            ),
-        ],
+          ],
+        ),
       ),
     );
   }
 
-  /// 범례 아이템 위젯
-  Widget _buildLegendItem(Color color, String label) {
-    return Row(
-      children: [
-        Container(
-          width: 12,
-          height: 12,
-          decoration: BoxDecoration(
-            color: color,
-            shape: BoxShape.circle,
-          ),
-        ),
-        const SizedBox(width: 4),
-        Text(
-          label,
-          style: AppTextStyles.labelSmall,
-        ),
-      ],
+  /// 애플 뮤직 스타일 가사 위젯
+  Widget _buildAppleMusicStyleLyrics(
+      List<LyricLine> lyrics, int currentLyricIndex) {
+    // 현재 가사 인덱스가 변경되면 스크롤 위치 업데이트
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (currentLyricIndex >= 0 && currentLyricIndex < lyrics.length) {
+        final itemHeight = 70.0; // 각 가사 항목의 대략적인 높이
+        final screenHeight = 380.0; // 가사 컨테이너의 높이
+        final offset = (currentLyricIndex * itemHeight) -
+            (screenHeight / 2) +
+            (itemHeight / 2);
+
+        if (_lyricsScrollController.hasClients) {
+          _lyricsScrollController.animateTo(
+            math.max(0, offset),
+            duration: const Duration(milliseconds: 600),
+            curve: Curves.easeOutCubic,
+          );
+        }
+      }
+    });
+
+    return ShaderMask(
+      shaderCallback: (Rect rect) {
+        return LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            Colors.transparent,
+            Colors.white,
+            Colors.white,
+            Colors.transparent
+          ],
+          stops: const [0.0, 0.1, 0.9, 1.0],
+        ).createShader(rect);
+      },
+      blendMode: BlendMode.dstIn,
+      child: ListView.builder(
+        controller: _lyricsScrollController,
+        physics: const BouncingScrollPhysics(),
+        padding: const EdgeInsets.symmetric(vertical: 80, horizontal: 20),
+        itemCount: lyrics.length,
+        itemBuilder: (context, index) {
+          final lyric = lyrics[index];
+          final isActive = index == currentLyricIndex;
+
+          return _buildAppleMusicLyricItem(lyric, index, isActive: isActive);
+        },
+      ),
     );
   }
 
-  /// 가사 아이템 위젯
-  Widget _buildLyricItem(LyricLine lyric, int index,
-      {bool isHighlighted = false}) {
-    // 노래 파트 (가수/팬) 색상 설정
-    final Color primaryColor = lyric.type == LyricType.artist
-        ? AppColors.primary
-        : AppColors.secondary;
+  /// 애플 뮤직 스타일 가사 아이템
+  Widget _buildAppleMusicLyricItem(LyricLine lyric, int index,
+      {bool isActive = false}) {
+    // 팬 응원법인 경우 특별한 스타일 적용
+    final isFanChant = lyric.type == LyricType.fan;
 
     return GestureDetector(
       onTap: () {
         // 가사 터치 시 해당 시간으로 이동
         ref.read(lyricsHighlightProvider.notifier).jumpToLyric(index);
       },
-      child: Container(
-        padding: const EdgeInsets.symmetric(
-          vertical: 8,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 400),
+        curve: Curves.easeOutCubic,
+        margin: EdgeInsets.symmetric(
+          vertical: isActive ? 12.0 : 8.0,
+          horizontal: isActive
+              ? 0.0
+              : isFanChant
+                  ? 20.0
+                  : 10.0,
         ),
-        decoration: isHighlighted
-            ? BoxDecoration(
-                color: primaryColor.withOpacity(0.1),
-                border: Border(
-                  left: BorderSide(
-                    color: primaryColor,
-                    width: 3,
-                  ),
-                ),
-                borderRadius: const BorderRadius.only(
-                  topRight: Radius.circular(4),
-                  bottomRight: Radius.circular(4),
-                ),
-              )
-            : null,
+        padding: EdgeInsets.symmetric(
+          vertical: 10.0,
+          horizontal: isFanChant ? 14.0 : 8.0,
+        ),
+        decoration: BoxDecoration(
+          color: isFanChant
+              ? AppColors.secondary.withOpacity(isActive ? 0.3 : 0.1)
+              : isActive
+                  ? Colors.white.withOpacity(0.15)
+                  : Colors.transparent,
+          borderRadius: BorderRadius.circular(isFanChant ? 24 : 12),
+          border: isFanChant
+              ? Border.all(
+                  color: AppColors.secondary.withOpacity(isActive ? 0.6 : 0.3),
+                  width: 1,
+                )
+              : null,
+        ),
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // 가수 파트
-            if (lyric.type == LyricType.artist)
-              Expanded(
-                child: Padding(
-                  padding: EdgeInsets.only(
-                    left: isHighlighted ? 8 : 0,
-                  ),
-                  child: Text(
-                    lyric.text,
-                    style: isHighlighted
-                        ? AppTextStyles.highlightedLyrics
-                        : AppTextStyles.artistLyrics,
-                    textAlign: TextAlign.left,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-              )
-            else
-              const Spacer(),
-
-            // 재생 시간 표시 (디버깅용, 필요 시 주석 해제)
-            // Text(
-            //   '${lyric.startTime}s',
-            //   style: TextStyle(fontSize: 10, color: Colors.grey),
-            // ),
-
-            // 팬 파트
-            if (lyric.type == LyricType.fan)
-              Expanded(
+            if (isFanChant)
+              Icon(
+                Icons.mic_external_on,
+                size: 16,
+                color: Colors.white.withOpacity(isActive ? 0.9 : 0.5),
+              ),
+            if (isFanChant) const SizedBox(width: 8),
+            Expanded(
+              child: AnimatedDefaultTextStyle(
+                duration: const Duration(milliseconds: 300),
+                style: isFanChant
+                    ? AppTextStyles.appleMusicFanChant.copyWith(
+                        color: Colors.white.withOpacity(isActive ? 0.9 : 0.6),
+                        fontSize: isActive ? 16 : 14,
+                      )
+                    : isActive
+                        ? AppTextStyles.appleMusicActiveLyric
+                        : AppTextStyles.appleMusicInactiveLyric,
+                textAlign: isFanChant ? TextAlign.left : TextAlign.center,
                 child: Text(
                   lyric.text,
-                  style: isHighlighted
-                      ? AppTextStyles.highlightedLyrics.copyWith(
-                          color: AppColors.secondary,
-                        )
-                      : AppTextStyles.fanLyrics,
-                  textAlign: TextAlign.right,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
-              )
-            else
-              const Spacer(),
+              ),
+            ),
           ],
         ),
       ),

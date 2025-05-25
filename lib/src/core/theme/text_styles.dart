@@ -79,6 +79,35 @@ class AppTextStyles {
     height: 1.5,
   );
 
+  // 애플 뮤직 스타일 가사 텍스트
+  /// 활성화된 가사 텍스트 스타일 (애플 뮤직 스타일)
+  static final TextStyle appleMusicActiveLyric = GoogleFonts.notoSans(
+    fontSize: 22,
+    fontWeight: FontWeight.w700,
+    color: Colors.white,
+    height: 1.4,
+    letterSpacing: -0.2,
+  );
+
+  /// 비활성화된 가사 텍스트 스타일 (애플 뮤직 스타일)
+  static final TextStyle appleMusicInactiveLyric = GoogleFonts.notoSans(
+    fontSize: 18,
+    fontWeight: FontWeight.w500,
+    color: Colors.white70,
+    height: 1.4,
+    letterSpacing: -0.2,
+  );
+
+  /// 팬 응원법 텍스트 스타일 (애플 뮤직 스타일)
+  static final TextStyle appleMusicFanChant = GoogleFonts.notoSans(
+    fontSize: 16,
+    fontWeight: FontWeight.w500,
+    color: AppColors.secondary.withOpacity(0.9),
+    height: 1.4,
+    letterSpacing: -0.2,
+    fontStyle: FontStyle.italic,
+  );
+
   /// 버튼 텍스트 스타일
   static final TextStyle button = GoogleFonts.notoSans(
     fontSize: 14,
