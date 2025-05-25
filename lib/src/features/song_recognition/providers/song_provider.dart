@@ -190,6 +190,9 @@ class SongRecognition extends _$SongRecognition {
 
       state = state.copyWith(recognizedSong: updatedSong);
     }
+
+    // 찜 상태가 변경되었음을 알리기 위해 상태 변경 이벤트 발생
+    ref.invalidateSelf();
   }
 
   /// 찜한 노래 목록 가져오기
@@ -286,6 +289,10 @@ List<Song> allSongs(AllSongsRef ref) {
 /// 찜한 노래 목록을 제공하는 프로바이더
 @riverpod
 List<Song> favoriteSongs(FavoriteSongsRef ref) {
-  final songRecognition = ref.watch(songRecognitionProvider.notifier);
+  // songRecognitionProvider 상태가 변경될 때마다 다시 계산
+  ref.watch(songRecognitionProvider);
+
+  // notifier에서 직접 찜 목록 가져오기
+  final songRecognition = ref.read(songRecognitionProvider.notifier);
   return songRecognition.getFavoriteSongs();
 }

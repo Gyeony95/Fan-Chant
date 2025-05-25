@@ -461,6 +461,8 @@ class _SongRecognitionScreenState extends ConsumerState<SongRecognitionScreen>
             IconButton(
               onPressed: () async {
                 await notifier.toggleFavorite(song);
+                // 찜 목록 프로바이더 갱신
+                ref.invalidate(favoriteSongsProvider);
               },
               icon: Icon(
                 isFavorite ? FlutterRemix.heart_fill : FlutterRemix.heart_line,

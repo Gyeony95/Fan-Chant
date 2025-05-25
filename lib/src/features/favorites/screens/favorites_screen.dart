@@ -173,9 +173,13 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
             // 찜 아이콘
             IconButton(
               onPressed: () async {
+                // 찜 상태 토글
                 await songRecognition.toggleFavorite(song);
+
+                // 현재 화면 상태를 다시 빌드하기 위해 favoriteSongsProvider 다시 읽기
+                ref.invalidate(favoriteSongsProvider);
               },
-              icon: Icon(
+              icon: const Icon(
                 FlutterRemix.heart_fill,
                 color: Colors.red,
                 size: 22,

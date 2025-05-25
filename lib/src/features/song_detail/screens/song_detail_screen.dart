@@ -145,6 +145,9 @@ class _SongDetailScreenState extends ConsumerState<SongDetailScreen> {
                     .read(currentSongProvider.notifier)
                     .setCurrentSong(updatedSong);
               }
+
+              // 찜 목록 프로바이더 갱신
+              ref.invalidate(favoriteSongsProvider);
             },
             icon: Icon(
               isFavorite ? FlutterRemix.heart_fill : FlutterRemix.heart_line,
