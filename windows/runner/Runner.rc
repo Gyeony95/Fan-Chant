@@ -89,11 +89,11 @@ BEGIN
     BEGIN
         BLOCK "040904e4"
         BEGIN
-            VALUE "CompanyName", "com.example" "\0"
+            VALUE "CompanyName", "com.gyeony" "\0"
             VALUE "FileDescription", "fan_chant" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
             VALUE "InternalName", "fan_chant" "\0"
-            VALUE "LegalCopyright", "Copyright (C) 2025 com.example. All rights reserved." "\0"
+            VALUE "LegalCopyright", "Copyright (C) 2025 com.gyeony. All rights reserved." "\0"
             VALUE "OriginalFilename", "fan_chant.exe" "\0"
             VALUE "ProductName", "fan_chant" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"

@@ -53,7 +53,9 @@ class SongRecognitionScreen extends ConsumerWidget {
 
                     // 인식 상태
                     if (recognitionState.status ==
-                        SongRecognitionStatus.recognizing)
+                            SongRecognitionStatus.recognizing ||
+                        recognitionState.status ==
+                            SongRecognitionStatus.failure)
                       _buildRecognitionStatus(),
 
                     // 최근 인식한 노래
@@ -99,7 +101,7 @@ class SongRecognitionScreen extends ConsumerWidget {
     WidgetRef ref,
     SongRecognitionState state,
   ) {
-    // 인식 중일 때는 비활성화
+    // 인식 중인지 확인
     final isRecognizing = state.status == SongRecognitionStatus.recognizing;
 
     return Column(
@@ -121,9 +123,9 @@ class SongRecognitionScreen extends ConsumerWidget {
               shape: const CircleBorder(),
               elevation: 4,
               child: InkWell(
-                onTap: isRecognizing
-                    ? null
-                    : () => _startRecognition(ref, context),
+                onTap: () => isRecognizing
+                    ? _cancelRecognition(ref)
+                    : _startRecognition(ref, context),
                 customBorder: const CircleBorder(),
                 child: Container(
                   width: 140,
@@ -133,7 +135,9 @@ class SongRecognitionScreen extends ConsumerWidget {
                   ),
                   child: Center(
                     child: Icon(
-                      FlutterRemix.mic_line,
+                      isRecognizing
+                          ? FlutterRemix.stop_line
+                          : FlutterRemix.mic_line,
                       size: 48,
                       color: Colors.white,
                     ),
@@ -143,6 +147,18 @@ class SongRecognitionScreen extends ConsumerWidget {
             ),
           ],
         ),
+        if (isRecognizing) ...[
+          const SizedBox(height: 16),
+          GestureDetector(
+            onTap: () => _cancelRecognition(ref),
+            child: Text(
+              '취소',
+              style: AppTextStyles.labelLarge.copyWith(
+                color: AppColors.primary,
+              ),
+            ),
+          ),
+        ],
       ],
     );
   }
@@ -159,27 +175,67 @@ class SongRecognitionScreen extends ConsumerWidget {
 
   /// 인식 상태 위젯
   Widget _buildRecognitionStatus() {
-    return Column(
-      children: [
-        const SizedBox(height: 20),
-        Text(
-          '노래 인식 중...',
-          style: AppTextStyles.bodyMedium.copyWith(
-            color: AppColors.textDark,
-          ),
-        ),
-        const SizedBox(height: 16),
-        SizedBox(
-          height: 40,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: List.generate(
-              12,
-              (index) => _buildSoundWaveLine(index),
+    return Consumer(
+      builder: (context, ref, child) {
+        final recognitionState = ref.watch(songRecognitionProvider);
+        final progress = recognitionState.recognitionProgress;
+        final message = recognitionState.statusMessage ?? '노래 인식 중...';
+
+        return Column(
+          children: [
+            const SizedBox(height: 20),
+            Text(
+              message,
+              style: AppTextStyles.bodyMedium.copyWith(
+                color: AppColors.textDark,
+                fontWeight: FontWeight.w500,
+              ),
             ),
-          ),
-        ),
-      ],
+            const SizedBox(height: 16),
+
+            // 진행 상황 표시기
+            Stack(
+              alignment: Alignment.center,
+              children: [
+                // 진행 상황 원형 표시
+                SizedBox(
+                  width: 100,
+                  height: 100,
+                  child: CircularProgressIndicator(
+                    value: progress,
+                    strokeWidth: 4.0,
+                    backgroundColor: Colors.grey[200],
+                    valueColor:
+                        AlwaysStoppedAnimation<Color>(AppColors.primary),
+                  ),
+                ),
+
+                // 사운드 웨이브 효과
+                SizedBox(
+                  height: 40,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: List.generate(
+                      12,
+                      (index) => _buildSoundWaveLine(index),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+
+            const SizedBox(height: 10),
+            if (recognitionState.statusMessage?.contains('다시 시도') ?? false)
+              Text(
+                '음악 소리를 크게 하고 다시 시도해보세요',
+                style: AppTextStyles.bodySmall.copyWith(
+                  color: AppColors.textMedium,
+                  fontStyle: FontStyle.italic,
+                ),
+              ),
+          ],
+        );
+      },
     );
   }
 
@@ -358,10 +414,16 @@ class SongRecognitionScreen extends ConsumerWidget {
       // 인식된 노래가 있으면 상세 화면으로 이동
       notifier.addToRecentSongs(state.recognizedSong!);
       await AppRoutes.navigateToSongDetail(context, state.recognizedSong!);
-    } else {
+    } else if (state.status == SongRecognitionStatus.failure) {
       // 인식 실패 시 처리
       await AppRoutes.navigateToRecognitionFailed(context);
     }
+  }
+
+  /// 노래 인식 취소 메서드
+  void _cancelRecognition(WidgetRef ref) {
+    final notifier = ref.read(songRecognitionProvider.notifier);
+    notifier.cancelRecognition();
   }
 
   /// 노래 선택 메서드
