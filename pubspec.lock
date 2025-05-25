@@ -267,6 +267,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.6.1"
+  flutter_shazam_kit:
+    dependency: "direct main"
+    description:
+      name: flutter_shazam_kit
+      sha256: "65b8d862d6e75492bdd09f9a0a8d92401b01ef700d32948c9a846d1bbe3c017f"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.2"
   flutter_test:
     dependency: "direct dev"
     description: flutter

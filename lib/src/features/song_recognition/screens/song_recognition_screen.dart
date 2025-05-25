@@ -26,42 +26,50 @@ class SongRecognitionScreen extends ConsumerWidget {
 
             // 메인 콘텐츠
             Expanded(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(
-                  AppDimensions.padding,
-                  AppDimensions.paddingSmall,
-                  AppDimensions.padding,
-                  AppDimensions.padding,
-                ),
-                child: Column(
-                  children: [
-                    const SizedBox(height: 10),
-                    Text(
-                      '노래를 인식하여 응원법을 찾아보세요',
-                      style: AppTextStyles.bodyLarge.copyWith(
-                        color: AppColors.textMedium,
+              child: CustomScrollView(
+                physics: const BouncingScrollPhysics(),
+                slivers: [
+                  SliverPadding(
+                    padding: const EdgeInsets.fromLTRB(
+                      AppDimensions.padding,
+                      AppDimensions.paddingSmall,
+                      AppDimensions.padding,
+                      AppDimensions.padding,
+                    ),
+                    sliver: SliverList(
+                      delegate: SliverChildListDelegate(
+                        [
+                          const SizedBox(height: 10),
+                          Text(
+                            '노래를 인식하여 응원법을 찾아보세요',
+                            style: AppTextStyles.bodyLarge.copyWith(
+                              color: AppColors.textMedium,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+
+                          const SizedBox(height: 20),
+
+                          // 인식 버튼
+                          _buildRecognitionButton(
+                              context, ref, recognitionState),
+
+                          const SizedBox(height: 10),
+
+                          // 인식 상태
+                          if (recognitionState.status ==
+                                  SongRecognitionStatus.recognizing ||
+                              recognitionState.status ==
+                                  SongRecognitionStatus.failure)
+                            _buildRecognitionStatus(),
+
+                          // 최근 인식한 노래
+                          _buildRecentSongs(context, ref),
+                        ],
                       ),
                     ),
-
-                    // 인식 버튼
-                    Expanded(
-                      child: Center(
-                        child: _buildRecognitionButton(
-                            context, ref, recognitionState),
-                      ),
-                    ),
-
-                    // 인식 상태
-                    if (recognitionState.status ==
-                            SongRecognitionStatus.recognizing ||
-                        recognitionState.status ==
-                            SongRecognitionStatus.failure)
-                      _buildRecognitionStatus(),
-
-                    // 최근 인식한 노래
-                    _buildRecentSongs(context, ref),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ],
@@ -104,62 +112,72 @@ class SongRecognitionScreen extends ConsumerWidget {
     // 인식 중인지 확인
     final isRecognizing = state.status == SongRecognitionStatus.recognizing;
 
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Stack(
-          alignment: Alignment.center,
-          children: [
-            // 파동 효과 (인식 중일 때만 표시)
-            if (isRecognizing) ...[
-              _buildRippleEffect(300, 0.2),
-              _buildRippleEffect(240, 0.3, delay: 0.5),
-              _buildRippleEffect(180, 0.4, delay: 1.0),
-            ],
+    return SizedBox(
+      width: double.infinity,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // 메인 버튼 및 파동 효과
+          SizedBox(
+            height: 180, // 고정 높이 설정
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                // 파동 효과 (인식 중일 때만 표시)
+                if (isRecognizing) ...[
+                  _buildRippleEffect(280, 0.2),
+                  _buildRippleEffect(220, 0.3, delay: 0.5),
+                  _buildRippleEffect(160, 0.4, delay: 1.0),
+                ],
 
-            // 메인 버튼
-            Material(
-              color: AppColors.primary,
-              shape: const CircleBorder(),
-              elevation: 4,
-              child: InkWell(
-                onTap: () => isRecognizing
-                    ? _cancelRecognition(ref)
-                    : _startRecognition(ref, context),
-                customBorder: const CircleBorder(),
-                child: Container(
-                  width: 140,
-                  height: 140,
-                  decoration: const BoxDecoration(
-                    shape: BoxShape.circle,
-                  ),
-                  child: Center(
-                    child: Icon(
-                      isRecognizing
-                          ? FlutterRemix.stop_line
-                          : FlutterRemix.mic_line,
-                      size: 48,
-                      color: Colors.white,
+                // 메인 버튼
+                Material(
+                  color: AppColors.primary,
+                  shape: const CircleBorder(),
+                  elevation: 4,
+                  child: InkWell(
+                    onTap: () => isRecognizing
+                        ? _cancelRecognition(ref)
+                        : _startRecognition(ref, context),
+                    customBorder: const CircleBorder(),
+                    child: Container(
+                      width: 130,
+                      height: 130,
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                      ),
+                      child: Center(
+                        child: Icon(
+                          isRecognizing
+                              ? FlutterRemix.stop_line
+                              : FlutterRemix.mic_line,
+                          size: 40,
+                          color: Colors.white,
+                        ),
+                      ),
                     ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          // 취소 버튼 (인식 중일 때만 표시)
+          if (isRecognizing)
+            GestureDetector(
+              onTap: () => _cancelRecognition(ref),
+              child: Padding(
+                padding: const EdgeInsets.only(top: 8.0),
+                child: Text(
+                  '취소',
+                  style: AppTextStyles.labelLarge.copyWith(
+                    color: AppColors.primary,
                   ),
                 ),
               ),
             ),
-          ],
-        ),
-        if (isRecognizing) ...[
-          const SizedBox(height: 16),
-          GestureDetector(
-            onTap: () => _cancelRecognition(ref),
-            child: Text(
-              '취소',
-              style: AppTextStyles.labelLarge.copyWith(
-                color: AppColors.primary,
-              ),
-            ),
-          ),
         ],
-      ],
+      ),
     );
   }
 
@@ -181,59 +199,69 @@ class SongRecognitionScreen extends ConsumerWidget {
         final progress = recognitionState.recognitionProgress;
         final message = recognitionState.statusMessage ?? '노래 인식 중...';
 
-        return Column(
-          children: [
-            const SizedBox(height: 20),
-            Text(
-              message,
-              style: AppTextStyles.bodyMedium.copyWith(
-                color: AppColors.textDark,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-            const SizedBox(height: 16),
-
-            // 진행 상황 표시기
-            Stack(
-              alignment: Alignment.center,
-              children: [
-                // 진행 상황 원형 표시
-                SizedBox(
-                  width: 100,
-                  height: 100,
-                  child: CircularProgressIndicator(
-                    value: progress,
-                    strokeWidth: 4.0,
-                    backgroundColor: Colors.grey[200],
-                    valueColor:
-                        AlwaysStoppedAnimation<Color>(AppColors.primary),
-                  ),
+        return Container(
+          constraints: const BoxConstraints(maxHeight: 200),
+          padding: const EdgeInsets.symmetric(vertical: 10),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                message,
+                style: AppTextStyles.bodyMedium.copyWith(
+                  color: AppColors.textDark,
+                  fontWeight: FontWeight.w500,
                 ),
+              ),
+              const SizedBox(height: 12),
 
-                // 사운드 웨이브 효과
-                SizedBox(
-                  height: 40,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: List.generate(
-                      12,
-                      (index) => _buildSoundWaveLine(index),
+              // 진행 상황 표시기
+              SizedBox(
+                height: 100,
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    // 진행 상황 원형 표시
+                    SizedBox(
+                      width: 80,
+                      height: 80,
+                      child: CircularProgressIndicator(
+                        value: progress,
+                        strokeWidth: 4.0,
+                        backgroundColor: Colors.grey[200],
+                        valueColor:
+                            AlwaysStoppedAnimation<Color>(AppColors.primary),
+                      ),
+                    ),
+
+                    // 사운드 웨이브 효과
+                    SizedBox(
+                      height: 30,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: List.generate(
+                          8, // 웨이브 라인 개수 축소
+                          (index) => _buildSoundWaveLine(index),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              if (recognitionState.statusMessage?.contains('다시 시도') ?? false)
+                Padding(
+                  padding: const EdgeInsets.only(top: 8.0),
+                  child: Text(
+                    '음악 소리를 크게 하고 다시 시도해보세요',
+                    style: AppTextStyles.bodySmall.copyWith(
+                      color: AppColors.textMedium,
+                      fontStyle: FontStyle.italic,
                     ),
                   ),
                 ),
-              ],
-            ),
-
-            const SizedBox(height: 10),
-            if (recognitionState.statusMessage?.contains('다시 시도') ?? false)
-              Text(
-                '음악 소리를 크게 하고 다시 시도해보세요',
-                style: AppTextStyles.bodySmall.copyWith(
-                  color: AppColors.textMedium,
-                  fontStyle: FontStyle.italic,
-                ),
-              ),
-          ],
+            ],
+          ),
         );
       },
     );
@@ -245,15 +273,15 @@ class SongRecognitionScreen extends ConsumerWidget {
       padding: const EdgeInsets.symmetric(horizontal: 2),
       child: TweenAnimationBuilder<double>(
         tween: Tween(begin: 0.3, end: 1.0),
-        duration: Duration(milliseconds: 800 + (index * 100) % 400),
+        duration: Duration(milliseconds: 600 + (index * 100) % 400),
         curve: Curves.easeInOut,
         builder: (context, value, child) {
           return Container(
-            width: 4,
-            height: 30 * value,
+            width: 3,
+            height: 24 * value,
             decoration: BoxDecoration(
               color: AppColors.primary,
-              borderRadius: BorderRadius.circular(2),
+              borderRadius: BorderRadius.circular(1.5),
             ),
           );
         },
@@ -458,20 +486,32 @@ class _RippleEffectWidgetState extends State<_RippleEffectWidget>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
+  late Animation<double> _opacityAnimation;
 
   @override
   void initState() {
     super.initState();
 
-    // 애니메이션 컨트롤러 생성
+    // 애니메이션 컨트롤러 생성 (더 부드러운 애니메이션을 위해 시간 증가)
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(seconds: 2),
+      duration: const Duration(milliseconds: 2500),
     );
 
-    // 애니메이션 정의
+    // 크기 애니메이션 정의 (easeOutQuart 커브 사용으로 더 자연스러운 효과)
     _animation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
+      CurvedAnimation(
+        parent: _controller,
+        curve: const Interval(0.0, 1.0, curve: Curves.easeOutQuart),
+      ),
+    );
+
+    // 투명도 애니메이션 별도 정의
+    _opacityAnimation = Tween<double>(begin: 1.0, end: 0.0).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: const Interval(0.3, 1.0, curve: Curves.easeOut),
+      ),
     );
 
     // 지연 후 애니메이션 시작
@@ -490,19 +530,32 @@ class _RippleEffectWidgetState extends State<_RippleEffectWidget>
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: _animation,
-      builder: (context, child) {
-        return Container(
-          width: widget.size * _animation.value,
-          height: widget.size * _animation.value,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: widget.color
-                .withOpacity(widget.opacity * (1 - _animation.value)),
-          ),
-        );
-      },
+    // 렌더링 최적화를 위한 RepaintBoundary 추가
+    return RepaintBoundary(
+      child: ClipOval(
+        child: AnimatedBuilder(
+          animation: _animation,
+          builder: (context, child) {
+            // 오버플로우 방지를 위한 SizedBox 사용
+            return SizedBox(
+              width: widget.size,
+              height: widget.size,
+              child: Center(
+                child: Container(
+                  width: widget.size * _animation.value,
+                  height: widget.size * _animation.value,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: widget.color.withOpacity(
+                      widget.opacity * _opacityAnimation.value,
+                    ),
+                  ),
+                ),
+              ),
+            );
+          },
+        ),
+      ),
     );
   }
 }

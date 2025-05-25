@@ -45,6 +45,7 @@ dependencies:
   
   # Audio recognition - placeholder for actual implementation
   # audio_recognition_plugin: ^1.0.0
+  flutter_shazam_kit: ^1.0.2
 
 dev_dependencies:
   flutter_test:
