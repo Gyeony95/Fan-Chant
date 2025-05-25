@@ -1,19 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:fan_chant/src/core/theme/colors.dart';
 
 /// 앱에서 사용되는 텍스트 스타일을 정의합니다.
 class AppTextStyles {
   AppTextStyles._();
 
-  /// 기본 폰트 패밀리
-  static const String _fontFamily = 'NotoSansKR';
-
-  /// 로고 폰트 패밀리
-  static const String _logoFontFamily = 'Pacifico';
-
   /// 로고 텍스트 스타일
-  static final TextStyle logo = TextStyle(
-    fontFamily: _logoFontFamily,
+  static final TextStyle logo = GoogleFonts.pacifico(
     fontSize: 24,
     fontWeight: FontWeight.w400,
     color: AppColors.primary,
@@ -21,8 +15,7 @@ class AppTextStyles {
   );
 
   /// 제목 텍스트 스타일
-  static const TextStyle title = TextStyle(
-    fontFamily: _fontFamily,
+  static final TextStyle title = GoogleFonts.notoSans(
     fontSize: 20,
     fontWeight: FontWeight.w500,
     color: Colors.black,
@@ -30,8 +23,7 @@ class AppTextStyles {
   );
 
   /// 서브타이틀 텍스트 스타일
-  static const TextStyle subtitle = TextStyle(
-    fontFamily: _fontFamily,
+  static final TextStyle subtitle = GoogleFonts.notoSans(
     fontSize: 16,
     fontWeight: FontWeight.w500,
     color: Colors.black,
@@ -39,8 +31,7 @@ class AppTextStyles {
   );
 
   /// 본문 텍스트 스타일
-  static const TextStyle body = TextStyle(
-    fontFamily: _fontFamily,
+  static final TextStyle body = GoogleFonts.notoSans(
     fontSize: 14,
     fontWeight: FontWeight.w400,
     color: Colors.black,
@@ -48,8 +39,7 @@ class AppTextStyles {
   );
 
   /// 작은 본문 텍스트 스타일
-  static const TextStyle bodySmallCustom = TextStyle(
-    fontFamily: _fontFamily,
+  static final TextStyle bodySmallCustom = GoogleFonts.notoSans(
     fontSize: 12,
     fontWeight: FontWeight.w400,
     color: Colors.black87,
@@ -57,8 +47,7 @@ class AppTextStyles {
   );
 
   /// 라벨 텍스트 스타일
-  static const TextStyle label = TextStyle(
-    fontFamily: _fontFamily,
+  static final TextStyle label = GoogleFonts.notoSans(
     fontSize: 12,
     fontWeight: FontWeight.w500,
     color: Colors.black,
@@ -67,8 +56,7 @@ class AppTextStyles {
   );
 
   /// 아티스트 가사 텍스트 스타일
-  static final TextStyle artistLyrics = TextStyle(
-    fontFamily: _fontFamily,
+  static final TextStyle artistLyrics = GoogleFonts.notoSans(
     fontSize: 14,
     fontWeight: FontWeight.w500,
     color: AppColors.primary,
@@ -76,8 +64,7 @@ class AppTextStyles {
   );
 
   /// 팬 가사 텍스트 스타일
-  static final TextStyle fanLyrics = TextStyle(
-    fontFamily: _fontFamily,
+  static final TextStyle fanLyrics = GoogleFonts.notoSans(
     fontSize: 14,
     fontWeight: FontWeight.w500,
     color: AppColors.secondary,
@@ -85,8 +72,7 @@ class AppTextStyles {
   );
 
   /// 강조 가사 텍스트 스타일
-  static final TextStyle highlightedLyrics = TextStyle(
-    fontFamily: _fontFamily,
+  static final TextStyle highlightedLyrics = GoogleFonts.notoSans(
     fontSize: 14,
     fontWeight: FontWeight.w700,
     color: AppColors.primary,
@@ -94,8 +80,7 @@ class AppTextStyles {
   );
 
   /// 버튼 텍스트 스타일
-  static const TextStyle button = TextStyle(
-    fontFamily: _fontFamily,
+  static final TextStyle button = GoogleFonts.notoSans(
     fontSize: 14,
     fontWeight: FontWeight.w500,
     letterSpacing: 0.5,
@@ -103,120 +88,105 @@ class AppTextStyles {
   );
 
   // Material 3 Text Styles
-  static const TextStyle displayLarge = TextStyle(
-    fontFamily: _fontFamily,
+  static final TextStyle displayLarge = GoogleFonts.notoSans(
     fontSize: 57,
     fontWeight: FontWeight.w400,
     letterSpacing: -0.25,
     height: 1.12,
   );
 
-  static const TextStyle displayMedium = TextStyle(
-    fontFamily: _fontFamily,
+  static final TextStyle displayMedium = GoogleFonts.notoSans(
     fontSize: 45,
     fontWeight: FontWeight.w400,
     letterSpacing: 0,
     height: 1.16,
   );
 
-  static const TextStyle displaySmall = TextStyle(
-    fontFamily: _fontFamily,
+  static final TextStyle displaySmall = GoogleFonts.notoSans(
     fontSize: 36,
     fontWeight: FontWeight.w400,
     letterSpacing: 0,
     height: 1.22,
   );
 
-  static const TextStyle headlineLarge = TextStyle(
-    fontFamily: _fontFamily,
+  static final TextStyle headlineLarge = GoogleFonts.notoSans(
     fontSize: 32,
     fontWeight: FontWeight.w400,
     letterSpacing: 0,
     height: 1.25,
   );
 
-  static const TextStyle headlineMedium = TextStyle(
-    fontFamily: _fontFamily,
+  static final TextStyle headlineMedium = GoogleFonts.notoSans(
     fontSize: 28,
     fontWeight: FontWeight.w400,
     letterSpacing: 0,
     height: 1.29,
   );
 
-  static const TextStyle headlineSmall = TextStyle(
-    fontFamily: _fontFamily,
+  static final TextStyle headlineSmall = GoogleFonts.notoSans(
     fontSize: 24,
     fontWeight: FontWeight.w400,
     letterSpacing: 0,
     height: 1.33,
   );
 
-  static const TextStyle titleLarge = TextStyle(
-    fontFamily: _fontFamily,
+  static final TextStyle titleLarge = GoogleFonts.notoSans(
     fontSize: 22,
     fontWeight: FontWeight.w500,
     letterSpacing: 0,
     height: 1.27,
   );
 
-  static const TextStyle titleMedium = TextStyle(
-    fontFamily: _fontFamily,
+  static final TextStyle titleMedium = GoogleFonts.notoSans(
     fontSize: 16,
     fontWeight: FontWeight.w500,
     letterSpacing: 0.15,
     height: 1.5,
   );
 
-  static const TextStyle titleSmall = TextStyle(
-    fontFamily: _fontFamily,
+  static final TextStyle titleSmall = GoogleFonts.notoSans(
     fontSize: 14,
     fontWeight: FontWeight.w500,
     letterSpacing: 0.1,
     height: 1.43,
   );
 
-  static const TextStyle bodyLarge = TextStyle(
-    fontFamily: _fontFamily,
+  static final TextStyle bodyLarge = GoogleFonts.notoSans(
     fontSize: 16,
     fontWeight: FontWeight.w400,
     letterSpacing: 0.5,
     height: 1.5,
   );
 
-  static const TextStyle bodyMedium = TextStyle(
-    fontFamily: _fontFamily,
+  static final TextStyle bodyMedium = GoogleFonts.notoSans(
     fontSize: 14,
     fontWeight: FontWeight.w400,
     letterSpacing: 0.25,
     height: 1.43,
   );
 
-  static const TextStyle bodySmall = TextStyle(
-    fontFamily: _fontFamily,
+  static final TextStyle bodySmall = GoogleFonts.notoSans(
     fontSize: 12,
     fontWeight: FontWeight.w400,
     letterSpacing: 0.4,
     height: 1.33,
   );
 
-  static const TextStyle labelLarge = TextStyle(
-    fontFamily: _fontFamily,
+  static final TextStyle labelLarge = GoogleFonts.notoSans(
     fontSize: 14,
     fontWeight: FontWeight.w500,
     letterSpacing: 0.1,
     height: 1.43,
   );
 
-  static const TextStyle labelMedium = TextStyle(
-    fontFamily: _fontFamily,
+  static final TextStyle labelMedium = GoogleFonts.notoSans(
     fontSize: 12,
     fontWeight: FontWeight.w500,
     letterSpacing: 0.5,
     height: 1.33,
   );
 
-  static const TextStyle labelSmall = TextStyle(
-    fontFamily: _fontFamily,
+  static final TextStyle labelSmall = GoogleFonts.notoSans(
     fontSize: 11,
     fontWeight: FontWeight.w500,
     letterSpacing: 0.5,

@@ -25,7 +25,6 @@ class AppTheme {
         onSurface: Colors.black,
       ),
       scaffoldBackgroundColor: Colors.white,
-      fontFamily: 'NotoSansKR',
       appBarTheme: AppBarTheme(
         backgroundColor: Colors.white,
         elevation: 0,

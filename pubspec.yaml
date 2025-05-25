@@ -41,7 +41,7 @@ dependencies:
   
   # UI
   google_fonts: ^6.2.0
-  remix_icon_icons: ^1.0.1
+  flutter_remix: ^0.0.1
   
   # Audio recognition - placeholder for actual implementation
   # audio_recognition_plugin: ^1.0.0
@@ -56,6 +56,10 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^4.0.0
+  
+  # Code generation for Riverpod
+  build_runner: ^2.4.8
+  riverpod_generator: ^2.3.9
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -77,30 +81,3 @@ flutter:
 
   # For details regarding adding assets from package dependencies, see
   # https://flutter.dev/to/asset-from-package
-
-  # To add custom fonts to your application, add a fonts section here,
-  # in this "flutter" section. Each entry in this list should have a
-  # "family" key with the font family name, and a "fonts" key with a
-  # list giving the asset and other descriptors for the font. For
-  # example:
-  fonts:
-    - family: Pacifico
-      fonts:
-        - asset: assets/fonts/Pacifico-Regular.ttf
-    - family: NotoSansKR
-      fonts:
-        - asset: assets/fonts/NotoSansKR-Light.otf
-          weight: 300
-        - asset: assets/fonts/NotoSansKR-Regular.otf
-          weight: 400
-        - asset: assets/fonts/NotoSansKR-Medium.otf
-          weight: 500
-        - asset: assets/fonts/NotoSansKR-Bold.otf
-          weight: 700
-  #
-  # For details regarding fonts from package dependencies,
-  # see https://flutter.dev/to/font-from-package
-
-  # Code generation for Riverpod
-  build_runner: ^2.4.8
-  riverpod_generator: ^2.3.9
