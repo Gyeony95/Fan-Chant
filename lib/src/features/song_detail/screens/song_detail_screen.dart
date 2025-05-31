@@ -11,6 +11,28 @@ import 'package:fan_chant/src/features/song_recognition/services/lyrics_service.
 import 'package:flutter_remix/flutter_remix.dart';
 import 'dart:math' as math;
 
+/// 파싱된 가사 정보를 담는 클래스
+class ParsedLyric {
+  final String cleanText; // 마크업이 제거된 깨끗한 가사
+  final List<FanChantPart> fanChants; // 추출된 팬 응원 파트들
+
+  ParsedLyric({
+    required this.cleanText,
+    required this.fanChants,
+  });
+}
+
+/// 팬 응원 파트 정보를 담는 클래스
+class FanChantPart {
+  final String text;
+  final LyricType type;
+
+  FanChantPart({
+    required this.text,
+    required this.type,
+  });
+}
+
 /// 노래 상세 정보 화면
 class SongDetailScreen extends ConsumerStatefulWidget {
   /// 노래 정보
@@ -133,6 +155,32 @@ class _SongDetailScreenState extends ConsumerState<SongDetailScreen> {
       }
     }
     return true;
+  }
+
+  /// 가사 텍스트에서 팬 응원 파트를 파싱하는 함수
+  ParsedLyric _parseLyricText(String text) {
+    // [fan:텍스트] 또는 [both:텍스트] 패턴을 찾는 정규식
+    final RegExp fanChantRegex = RegExp(r'\[(fan|both):([^\]]+)\]');
+    final List<FanChantPart> fanChants = [];
+
+    // 모든 매치를 찾아서 팬 응원 파트 추출
+    final matches = fanChantRegex.allMatches(text);
+    for (final match in matches) {
+      final typeString = match.group(1)!;
+      final chantText = match.group(2)!;
+
+      final LyricType type =
+          typeString == 'fan' ? LyricType.fan : LyricType.both;
+      fanChants.add(FanChantPart(text: chantText, type: type));
+    }
+
+    // 마크업을 제거한 깨끗한 가사 텍스트 생성
+    final cleanText = text.replaceAll(fanChantRegex, '').trim();
+
+    return ParsedLyric(
+      cleanText: cleanText,
+      fanChants: fanChants,
+    );
   }
 
   @override
@@ -460,46 +508,32 @@ class _SongDetailScreenState extends ConsumerState<SongDetailScreen> {
     final playbackState = ref.watch(playbackStateProvider);
 
     // 재생 중이고 사용자가 스크롤하지 않을 때만 자동 스크롤 실행
-    // 팬 전용 파트는 스킵하고 가수/함께 부르는 파트만 포커싱
     if (playbackState.isPlaying &&
         !_isUserScrolling &&
         currentLyricIndex >= 0 &&
         currentLyricIndex < lyrics.length &&
         currentLyricIndex != _lastAutoScrollIndex) {
-      // 현재 가사가 팬 전용 파트가 아닌 경우에만 스크롤
-      final currentLyric = lyrics[currentLyricIndex];
-      if (currentLyric.type != LyricType.fan) {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          _scrollToLyric(currentLyricIndex, lyrics.length);
-        });
-      }
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _scrollToLyric(currentLyricIndex, lyrics.length);
+      });
     }
 
-    // 가수/함께 부르는 파트만 표시하고, 각 파트 아래에 관련 팬 응원 표시
-    final mainLyrics = <Widget>[];
+    // 가사 리스트 생성
+    final lyricWidgets = <Widget>[];
 
     for (int i = 0; i < lyrics.length; i++) {
       final lyric = lyrics[i];
-
-      // 팬 전용 파트는 개별적으로 표시하지 않음 (메인 파트와 함께 표시됨)
-      if (lyric.type == LyricType.fan) {
-        continue;
-      }
-
       final isActive = i == currentLyricIndex;
 
-      // 현재 가사 다음에 오는 팬 응원 파트들 찾기
-      final List<LyricLine> fanChants = [];
-      for (int j = i + 1; j < lyrics.length; j++) {
-        if (lyrics[j].type == LyricType.fan) {
-          fanChants.add(lyrics[j]);
-        } else {
-          break;
-        }
+      // artist 타입인 경우 텍스트 파싱하여 인라인 표시
+      if (lyric.type == LyricType.artist) {
+        final parsedLyric = _parseLyricText(lyric.text);
+        lyricWidgets.add(
+            _buildInlineLyricItem(lyric, i, parsedLyric, isActive: isActive));
+      } else {
+        // fan, both 타입은 기존 방식대로
+        lyricWidgets.add(_buildSimpleLyricItem(lyric, i, isActive: isActive));
       }
-
-      mainLyrics.add(
-          _buildMainLyricWithFanChant(lyric, i, fanChants, isActive: isActive));
     }
 
     return NotificationListener<ScrollNotification>(
@@ -523,32 +557,25 @@ class _SongDetailScreenState extends ConsumerState<SongDetailScreen> {
           controller: _lyricsScrollController,
           physics: const BouncingScrollPhysics(),
           padding: const EdgeInsets.symmetric(vertical: 80, horizontal: 20),
-          children: mainLyrics,
+          children: lyricWidgets,
         ),
       ),
     );
   }
 
-  /// 메인 가사와 팬 응원을 함께 표시하는 위젯
-  Widget _buildMainLyricWithFanChant(
-    LyricLine mainLyric,
+  /// 인라인 마크업 가사 아이템 (artist 타입용)
+  Widget _buildInlineLyricItem(
+    LyricLine originalLyric,
     int index,
-    List<LyricLine> fanChants, {
+    ParsedLyric parsedLyric, {
     bool isActive = false,
   }) {
-    final isBothChant = mainLyric.type == LyricType.both;
-
     return GestureDetector(
       onTap: () {
-        // 가사 터치 시 해당 시간으로 이동
         ref.read(lyricsHighlightProvider.notifier).jumpToLyric(index);
-
-        // 사용자 스크롤 상태 해제 및 재생 시작
         setState(() {
           _isUserScrolling = false;
         });
-
-        // 재생 시작
         final playbackState = ref.read(playbackStateProvider);
         if (!playbackState.isPlaying) {
           ref.read(playbackStateProvider.notifier).play();
@@ -559,127 +586,209 @@ class _SongDetailScreenState extends ConsumerState<SongDetailScreen> {
           vertical: isActive ? 16.0 : 12.0,
           horizontal: 0.0,
         ),
-        child: Column(
-          children: [
-            // 메인 가사 (가수 또는 함께 부르는 파트)
-            AnimatedContainer(
-              duration: const Duration(milliseconds: 400),
-              curve: Curves.easeOutCubic,
-              padding: EdgeInsets.symmetric(
-                vertical: 12.0,
-                horizontal: isBothChant ? 16.0 : 12.0,
-              ),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 400),
+          curve: Curves.easeOutCubic,
+          padding: const EdgeInsets.symmetric(
+            vertical: 12.0,
+            horizontal: 12.0,
+          ),
+          decoration: BoxDecoration(
+            color:
+                isActive ? Colors.white.withOpacity(0.15) : Colors.transparent,
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child:
+              _buildRichTextWithInlineChants(parsedLyric, isActive: isActive),
+        ),
+      ),
+    );
+  }
+
+  /// 인라인 팬 응원이 포함된 리치 텍스트 생성
+  Widget _buildRichTextWithInlineChants(
+    ParsedLyric parsedLyric, {
+    bool isActive = false,
+  }) {
+    // 원본 텍스트를 분석해서 마크업 위치에 따라 텍스트 스팬들 생성
+    final originalText = parsedLyric.cleanText;
+    final fanChants = parsedLyric.fanChants;
+
+    if (fanChants.isEmpty) {
+      // 마크업이 없는 경우 일반 텍스트로 표시
+      return AnimatedDefaultTextStyle(
+        duration: const Duration(milliseconds: 300),
+        style: isActive
+            ? AppTextStyles.appleMusicActiveLyric
+            : AppTextStyles.appleMusicInactiveLyric,
+        textAlign: TextAlign.center,
+        child: Text(
+          originalText,
+          maxLines: 3,
+          overflow: TextOverflow.ellipsis,
+        ),
+      );
+    }
+
+    // 마크업이 있는 경우 인라인으로 표시
+    return Wrap(
+      alignment: WrapAlignment.center,
+      crossAxisAlignment: WrapCrossAlignment.center,
+      children: [
+        // 메인 가사 텍스트
+        AnimatedDefaultTextStyle(
+          duration: const Duration(milliseconds: 300),
+          style: isActive
+              ? AppTextStyles.appleMusicActiveLyric
+              : AppTextStyles.appleMusicInactiveLyric,
+          child: Text(
+            originalText,
+            textAlign: TextAlign.center,
+          ),
+        ),
+
+        // 팬 응원 파트들을 인라인으로 표시
+        ...fanChants.map((fanChant) => Container(
+              margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
               decoration: BoxDecoration(
-                color: isBothChant
-                    ? AppColors.primary.withOpacity(isActive ? 0.2 : 0.08)
-                    : isActive
-                        ? Colors.white.withOpacity(0.15)
-                        : Colors.transparent,
-                borderRadius: BorderRadius.circular(isBothChant ? 16 : 12),
-                border: isBothChant
-                    ? Border.all(
-                        color:
-                            AppColors.primary.withOpacity(isActive ? 0.4 : 0.2),
-                        width: 1,
-                      )
-                    : null,
+                color: fanChant.type == LyricType.fan
+                    ? AppColors.secondary.withOpacity(0.8)
+                    : AppColors.primary.withOpacity(0.8),
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(
+                  color: fanChant.type == LyricType.fan
+                      ? AppColors.secondary
+                      : AppColors.primary,
+                  width: 1,
+                ),
               ),
               child: Row(
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  if (isBothChant)
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          Icons.people,
-                          size: 18,
-                          color: Colors.white.withOpacity(isActive ? 0.9 : 0.6),
-                        ),
-                        const SizedBox(width: 4),
-                        Icon(
-                          Icons.mic,
-                          size: 16,
-                          color: Colors.white.withOpacity(isActive ? 0.9 : 0.6),
-                        ),
-                        const SizedBox(width: 12),
-                      ],
-                    ),
-                  Expanded(
-                    child: AnimatedDefaultTextStyle(
-                      duration: const Duration(milliseconds: 300),
-                      style: isBothChant
-                          ? AppTextStyles.appleMusicActiveLyric.copyWith(
-                              color: Colors.white
-                                  .withOpacity(isActive ? 0.95 : 0.7),
-                              fontSize: isActive ? 22 : 18,
-                              fontWeight: FontWeight.w800,
-                            )
-                          : isActive
-                              ? AppTextStyles.appleMusicActiveLyric
-                              : AppTextStyles.appleMusicInactiveLyric,
-                      textAlign: TextAlign.center,
-                      child: Text(
-                        mainLyric.text,
-                        maxLines: 3,
-                        overflow: TextOverflow.ellipsis,
-                      ),
+                  Icon(
+                    fanChant.type == LyricType.fan
+                        ? Icons.mic_external_on
+                        : Icons.people,
+                    size: 14,
+                    color: Colors.white,
+                  ),
+                  const SizedBox(width: 6),
+                  Text(
+                    fanChant.text,
+                    style: AppTextStyles.bodySmall.copyWith(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w700,
+                      fontSize: 13,
                     ),
                   ),
                 ],
               ),
-            ),
+            )),
+      ],
+    );
+  }
 
-            // 팬 응원 파트들 (서브 정보)
-            if (fanChants.isNotEmpty) ...[
-              const SizedBox(height: 12),
-              ...fanChants.map((fanChant) => Container(
-                    margin: const EdgeInsets.only(bottom: 8),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 20,
-                      vertical: 12,
+  /// 단순 가사 아이템 (fan, both 타입용)
+  Widget _buildSimpleLyricItem(
+    LyricLine lyric,
+    int index, {
+    bool isActive = false,
+  }) {
+    final isBothChant = lyric.type == LyricType.both;
+    final isFanChant = lyric.type == LyricType.fan;
+
+    return GestureDetector(
+      onTap: () {
+        ref.read(lyricsHighlightProvider.notifier).jumpToLyric(index);
+        setState(() {
+          _isUserScrolling = false;
+        });
+        final playbackState = ref.read(playbackStateProvider);
+        if (!playbackState.isPlaying) {
+          ref.read(playbackStateProvider.notifier).play();
+        }
+      },
+      child: Container(
+        margin: EdgeInsets.symmetric(
+          vertical: isActive ? 16.0 : 12.0,
+          horizontal: 0.0,
+        ),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 400),
+          curve: Curves.easeOutCubic,
+          padding: const EdgeInsets.symmetric(
+            vertical: 12.0,
+            horizontal: 16.0,
+          ),
+          decoration: BoxDecoration(
+            color: isBothChant
+                ? AppColors.primary.withOpacity(isActive ? 0.2 : 0.08)
+                : isFanChant
+                    ? AppColors.secondary.withOpacity(isActive ? 0.25 : 0.1)
+                    : Colors.white.withOpacity(isActive ? 0.15 : 0.05),
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(
+              color: isBothChant
+                  ? AppColors.primary.withOpacity(isActive ? 0.4 : 0.2)
+                  : isFanChant
+                      ? AppColors.secondary.withOpacity(isActive ? 0.6 : 0.3)
+                      : Colors.white.withOpacity(isActive ? 0.3 : 0.1),
+              width: 1,
+            ),
+          ),
+          child: Row(
+            children: [
+              if (isBothChant || isFanChant)
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      isBothChant ? Icons.people : Icons.mic_external_on,
+                      size: 18,
+                      color: Colors.white.withOpacity(isActive ? 0.9 : 0.6),
                     ),
-                    decoration: BoxDecoration(
-                      color: AppColors.secondary.withOpacity(0.25),
-                      borderRadius: BorderRadius.circular(24),
-                      border: Border.all(
-                        color: AppColors.secondary.withOpacity(0.6),
-                        width: 2,
+                    if (isBothChant) ...[
+                      const SizedBox(width: 4),
+                      Icon(
+                        Icons.mic,
+                        size: 16,
+                        color: Colors.white.withOpacity(isActive ? 0.9 : 0.6),
                       ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: AppColors.secondary.withOpacity(0.3),
-                          blurRadius: 8,
-                          offset: const Offset(0, 2),
-                        ),
-                      ],
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          Icons.mic_external_on,
-                          size: 18,
-                          color: Colors.white,
-                        ),
-                        const SizedBox(width: 12),
-                        Flexible(
-                          child: Text(
-                            fanChant.text,
-                            style: AppTextStyles.bodyMedium.copyWith(
+                    ],
+                    const SizedBox(width: 12),
+                  ],
+                ),
+              Expanded(
+                child: AnimatedDefaultTextStyle(
+                  duration: const Duration(milliseconds: 300),
+                  style: isBothChant
+                      ? AppTextStyles.appleMusicActiveLyric.copyWith(
+                          color:
+                              Colors.white.withOpacity(isActive ? 0.95 : 0.7),
+                          fontSize: isActive ? 22 : 18,
+                          fontWeight: FontWeight.w800,
+                        )
+                      : isFanChant
+                          ? AppTextStyles.bodyMedium.copyWith(
                               color: Colors.white,
                               fontWeight: FontWeight.w700,
                               fontSize: 15,
                               letterSpacing: 0.3,
-                            ),
-                            maxLines: 3,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                      ],
-                    ),
-                  )),
+                            )
+                          : isActive
+                              ? AppTextStyles.appleMusicActiveLyric
+                              : AppTextStyles.appleMusicInactiveLyric,
+                  textAlign: TextAlign.center,
+                  child: Text(
+                    lyric.text,
+                    maxLines: 3,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ),
             ],
-          ],
+          ),
         ),
       ),
     );

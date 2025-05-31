@@ -9,6 +9,12 @@
   "hasFanChant": true,
   "lyrics": [
     {
+      "text": "(함성)",
+      "type": "fan",
+      "startTime": 0,
+      "endTime": 3
+    },
+    {
       "text": "아직도 난",
       "type": "artist", 
       "startTime": 3,
@@ -87,25 +93,25 @@
       "endTime": 32
     },
     {
-      "text": "내 이름을 외치는 목소리",
+      "text": "내 이름을 외치는 목소리 [fan:(아이유!)]",
       "type": "artist",
       "startTime": 32,
       "endTime": 35
     },
     {
       "text": "(Oh it's so worth",
-      "type": "fan",
+      "type": "artist",
       "startTime": 35,
       "endTime": 36
     },
     {
       "text": "It's more than what, what)",
-      "type": "fan",
+      "type": "artist",
       "startTime": 36,
       "endTime": 39
     },
     {
-      "text": "빼곡히 적은 wish list",
+      "text": "빼곡히 적은 [fan:wish list]",
       "type": "artist",
       "startTime": 39,
       "endTime": 41
@@ -118,24 +124,24 @@
     },
     {
       "text": "(Take what you want",
-      "type": "fan",
+      "type": "artist",
       "startTime": 44,
       "endTime": 45
     },
     {
       "text": "No matter who calls you a freak)",
-      "type": "fan",
+      "type": "artist",
       "startTime": 45,
       "endTime": 48
     },
     {
-      "text": "설명할 필요 없어",
+      "text": "설명할 필요 [fan:없어]",
       "type": "artist",
       "startTime": 48,
       "endTime": 50
     },
     {
-      "text": "나 그때와는 다른 걸 원해, 원해",
+      "text": "나 그때와는 다른 걸 [both:원해, 원해]",
       "type": "artist",
       "startTime": 50,
       "endTime": 55
@@ -153,6 +159,12 @@
       "endTime": 64
     },
     {
+      "text": "(아이유!)",
+      "type": "fan",
+      "startTime": 57,
+      "endTime": 64
+    },
+    {
       "text": "Look around",
       "type": "fan",
       "startTime": 64,
@@ -166,13 +178,13 @@
     },
     {
       "text": "(Shop all day, ay",
-      "type": "fan",
+      "type": "both",
       "startTime": 73,
       "endTime": 77
     },
     {
       "text": "Greed is free, ay)",
-      "type": "fan",
+      "type": "both",
       "startTime": 77,
       "endTime": 82
     },
@@ -191,6 +203,12 @@
     {
       "text": "이 샵은 문 닫지 않아 늘, 영원히",
       "type": "artist",
+      "startTime": 89,
+      "endTime": 97
+    },
+    {
+      "text": "(우리가 가질게 아!이!유!)",
+      "type": "fan",
       "startTime": 89,
       "endTime": 97
     },
@@ -237,7 +255,7 @@
       "endTime": 115
     },
     {
-      "text": "내게는 없어 plan B",
+      "text": "내게는 없어 [fan:plan B]",
       "type": "artist",
       "startTime": 115,
       "endTime": 117
@@ -250,24 +268,24 @@
     },
     {
       "text": "(Take what you want",
-      "type": "fan",
+      "type": "artist",
       "startTime": 120,
       "endTime": 121
     },
     {
       "text": "No matter who puts down your greed)",
-      "type": "fan",
+      "type": "artist",
       "startTime": 121,
       "endTime": 124
     },
     {
-      "text": "적당히로는 안돼",
+      "text": "적당히로는 [fan:안돼]",
       "type": "artist",
       "startTime": 124,
       "endTime": 126
     },
     {
-      "text": "난 훨씬 더 대담한 걸 원해, 원해",
+      "text": "난 훨씬 더 대담한 걸 [both:원해, 원해]",
       "type": "artist",
       "startTime": 126,
       "endTime": 132
@@ -285,6 +303,12 @@
       "endTime": 141
     },
     {
+      "text": "(아이유!)",
+      "type": "fan",
+      "startTime": 133,
+      "endTime": 141
+    },
+    {
       "text": "Look around",
       "type": "fan",
       "startTime": 141,
@@ -297,7 +321,7 @@
       "endTime": 147
     },
     {
-      "text": "이 샵은 문 닫지 않아, 봐",
+      "text": "이 샵은 문 닫지 않아, [fan:봐]",
       "type": "artist",
       "startTime": 147,
       "endTime": 151
@@ -309,13 +333,13 @@
       "endTime": 154
     },
     {
-      "text": "for my Victory, even your jealousy",
-      "type": "fan",
+      "text": "for my [fan:Victory], even your [fan:jealousy]",
+      "type": "artist",
       "startTime": 154,
       "endTime": 160
     },
     {
-      "text": "나 이제껏 모르던 세상을 욕심 내볼래",
+      "text": "나 이제껏 모르던 세상을 욕심 내볼래 [fan:(함성))]",
       "type": "artist",
       "startTime": 160,
       "endTime": 168
@@ -333,6 +357,12 @@
       "endTime": 176
     },
     {
+      "text": "(아이유!)",
+      "type": "fan",
+      "startTime": 169,
+      "endTime": 176
+    },
+    {
       "text": "Look around",
       "type": "fan",
       "startTime": 176,
@@ -346,13 +376,13 @@
     },
     {
       "text": "Shop all day, ay",
-      "type": "fan",
+      "type": "both",
       "startTime": 185,
       "endTime": 189
     },
     {
       "text": "Greed is free, ay",
-      "type": "fan",
+      "type": "both",
       "startTime": 189,
       "endTime": 194
     },
@@ -363,13 +393,13 @@
       "endTime": 196
     },
     {
-      "text": "가지러 태어난 것처럼",
+      "text": "가지러 태어난 것처럼 [fan:다 가져!]",
       "type": "artist",
       "startTime": 196,
       "endTime": 201
     },
     {
-      "text": "이 샵은 문 닫지 않아 늘, 영원히",
+      "text": "이 샵은 문 닫지 않아 늘, 영원히 [fan:아!이!유! (함성)]",
       "type": "artist",
       "startTime": 201,
       "endTime": 209
