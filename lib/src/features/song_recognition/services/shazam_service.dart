@@ -189,7 +189,8 @@ class ShazamService {
             final mediaItems = result.mediaItems;
             if (mediaItems.isNotEmpty) {
               final mediaItem = mediaItems.first;
-              debugPrint('$mediaItems');
+              debugPrint('artworkUrl : ${mediaItem.artworkUrl}');
+              debugPrint('title : ${mediaItem.title}');
               // Apple Music ID 가져오기
               final appleMusicId =
                   _getAppleMusicIdFromUrl(mediaItem.appleMusicUrl);
