@@ -554,20 +554,23 @@ class _FullScreenLyricsScreenState
       },
       child: Container(
         key: _lyricItemKeys[index],
-        margin: EdgeInsets.symmetric(
-          vertical: isActive ? 24.0 : 18.0,
+        margin: const EdgeInsets.symmetric(
+          vertical: 16.0, // 고정 마진
           horizontal: 0.0,
+        ),
+        constraints: const BoxConstraints(
+          minHeight: 80.0, // 최소 높이 고정
         ),
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 400),
           curve: Curves.easeOutCubic,
           padding: const EdgeInsets.symmetric(
-            vertical: 16.0,
+            vertical: 20.0,
             horizontal: 20.0,
           ),
           decoration: BoxDecoration(
             color:
-                isActive ? Colors.white.withOpacity(0.1) : Colors.transparent,
+                isActive ? Colors.white.withOpacity(0.15) : Colors.transparent,
             borderRadius: BorderRadius.circular(16),
           ),
           child: _buildFullScreenRichText(parsedLyric, isActive: isActive),
@@ -588,10 +591,10 @@ class _FullScreenLyricsScreenState
       return AnimatedDefaultTextStyle(
         duration: const Duration(milliseconds: 300),
         style: TextStyle(
-          color: Colors.white.withOpacity(isActive ? 1.0 : 0.6),
-          fontSize: isActive ? 32 : 24,
+          color: isActive ? Colors.white : Colors.white.withOpacity(0.6),
+          fontSize: 26, // 고정 크기 (전체화면용)
           fontWeight: isActive ? FontWeight.w700 : FontWeight.w500,
-          height: 1.4,
+          height: 1.4, // 줄간격 고정
         ),
         textAlign: TextAlign.center,
         child: Text(
@@ -610,14 +613,16 @@ class _FullScreenLyricsScreenState
         AnimatedDefaultTextStyle(
           duration: const Duration(milliseconds: 300),
           style: TextStyle(
-            color: Colors.white.withOpacity(isActive ? 1.0 : 0.6),
-            fontSize: isActive ? 32 : 24,
+            color: isActive ? Colors.white : Colors.white.withOpacity(0.6),
+            fontSize: 26, // 고정 크기
             fontWeight: isActive ? FontWeight.w700 : FontWeight.w500,
-            height: 1.4,
+            height: 1.4, // 줄간격 고정
           ),
           child: Text(
             originalText,
             textAlign: TextAlign.center,
+            maxLines: 4,
+            overflow: TextOverflow.ellipsis,
           ),
         ),
 
@@ -627,14 +632,14 @@ class _FullScreenLyricsScreenState
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               decoration: BoxDecoration(
                 color: fanChant.type == LyricType.fan
-                    ? AppColors.secondary.withOpacity(0.8)
-                    : AppColors.primary.withOpacity(0.8),
+                    ? AppColors.secondary.withOpacity(isActive ? 0.9 : 0.8)
+                    : AppColors.primary.withOpacity(isActive ? 0.9 : 0.8),
                 borderRadius: BorderRadius.circular(20),
                 border: Border.all(
                   color: fanChant.type == LyricType.fan
                       ? AppColors.secondary
                       : AppColors.primary,
-                  width: 1.5,
+                  width: isActive ? 2 : 1.5, // 테두리로 활성화 표시
                 ),
               ),
               child: Row(
@@ -653,7 +658,8 @@ class _FullScreenLyricsScreenState
                     style: const TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.w700,
-                      fontSize: 16,
+                      fontSize: 16, // 고정 크기
+                      height: 1.2,
                     ),
                   ),
                 ],
@@ -690,31 +696,34 @@ class _FullScreenLyricsScreenState
       },
       child: Container(
         key: _lyricItemKeys[index],
-        margin: EdgeInsets.symmetric(
-          vertical: isActive ? 24.0 : 18.0,
+        margin: const EdgeInsets.symmetric(
+          vertical: 16.0, // 고정 마진
           horizontal: 0.0,
+        ),
+        constraints: const BoxConstraints(
+          minHeight: 80.0, // 최소 높이 고정
         ),
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 400),
           curve: Curves.easeOutCubic,
           padding: const EdgeInsets.symmetric(
-            vertical: 16.0,
+            vertical: 20.0,
             horizontal: 20.0,
           ),
           decoration: BoxDecoration(
             color: isBothChant
-                ? AppColors.primary.withOpacity(isActive ? 0.3 : 0.15)
+                ? AppColors.primary.withOpacity(isActive ? 0.35 : 0.15)
                 : isFanChant
-                    ? AppColors.secondary.withOpacity(isActive ? 0.3 : 0.15)
-                    : Colors.white.withOpacity(isActive ? 0.1 : 0.05),
+                    ? AppColors.secondary.withOpacity(isActive ? 0.35 : 0.15)
+                    : Colors.white.withOpacity(isActive ? 0.15 : 0.05),
             borderRadius: BorderRadius.circular(20),
             border: Border.all(
               color: isBothChant
-                  ? AppColors.primary.withOpacity(isActive ? 0.6 : 0.3)
+                  ? AppColors.primary.withOpacity(isActive ? 0.7 : 0.3)
                   : isFanChant
-                      ? AppColors.secondary.withOpacity(isActive ? 0.6 : 0.3)
-                      : Colors.white.withOpacity(isActive ? 0.3 : 0.1),
-              width: 1.5,
+                      ? AppColors.secondary.withOpacity(isActive ? 0.7 : 0.3)
+                      : Colors.white.withOpacity(isActive ? 0.4 : 0.1),
+              width: isActive ? 2 : 1.5, // 테두리로 활성화 표시
             ),
           ),
           child: Row(
@@ -743,10 +752,11 @@ class _FullScreenLyricsScreenState
                 child: AnimatedDefaultTextStyle(
                   duration: const Duration(milliseconds: 300),
                   style: TextStyle(
-                    color: Colors.white.withOpacity(isActive ? 1.0 : 0.7),
-                    fontSize: isActive ? 28 : 22,
+                    color:
+                        isActive ? Colors.white : Colors.white.withOpacity(0.7),
+                    fontSize: isFanChant ? 20 : 24, // 고정 크기 (타입별 차이)
                     fontWeight: isActive ? FontWeight.w800 : FontWeight.w600,
-                    height: 1.4,
+                    height: 1.4, // 줄간격 고정
                   ),
                   textAlign: TextAlign.center,
                   child: Text(
