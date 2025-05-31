@@ -91,8 +91,8 @@ class _SongDetailScreenState extends ConsumerState<SongDetailScreen> {
         ref.read(playbackStateProvider.notifier).setDuration(totalDuration);
       }
 
-      // 재생 시작
-      ref.read(playbackStateProvider.notifier).play();
+      // 재생 상태를 정지 상태로 초기화
+      ref.read(playbackStateProvider.notifier).pause();
     });
   }
 
