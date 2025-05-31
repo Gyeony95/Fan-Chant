@@ -56,6 +56,9 @@ class _SongDetailScreenState extends ConsumerState<SongDetailScreen> {
   bool _isUserScrolling = false;
   int _lastAutoScrollIndex = -1;
 
+  // 가사 아이템들의 GlobalKey 리스트 (정확한 위치 계산용)
+  final List<GlobalKey> _lyricItemKeys = [];
+
   @override
   void initState() {
     super.initState();
@@ -119,23 +122,105 @@ class _SongDetailScreenState extends ConsumerState<SongDetailScreen> {
     }
   }
 
-  /// 지정된 가사로 스크롤
+  /// 개선된 스크롤 함수 - 실제 아이템 위치 기반
   void _scrollToLyric(int index, int totalLyrics) {
     if (!_lyricsScrollController.hasClients) return;
 
-    final itemHeight = 70.0;
-    final screenHeight = 380.0;
-    final offset = (index * itemHeight) - (screenHeight / 2) + (itemHeight / 2);
-    final maxScrollExtent = _lyricsScrollController.position.maxScrollExtent;
-    final targetOffset = math.max(0.0, math.min(offset, maxScrollExtent));
+    // GlobalKey 리스트 크기가 부족한 경우 확장
+    while (_lyricItemKeys.length <= index) {
+      _lyricItemKeys.add(GlobalKey());
+    }
 
-    _lyricsScrollController.animateTo(
-      targetOffset,
-      duration: const Duration(milliseconds: 600),
-      curve: Curves.easeOutCubic,
-    );
+    // 가사 영역의 실제 높이
+    const lyricsAreaHeight = 380.0;
+
+    // 약간의 지연을 두고 실행해서 렌더링 완료 후 정확한 위치 계산
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!_lyricsScrollController.hasClients) return;
+
+      // 현재 아이템의 GlobalKey로 위치 계산 시도
+      final currentKey = _lyricItemKeys[index];
+      final RenderBox? renderBox =
+          currentKey.currentContext?.findRenderObject() as RenderBox?;
+
+      double targetOffset;
+
+      if (renderBox != null) {
+        try {
+          // 스크롤 뷰포트의 RenderBox 가져오기
+          final scrollRenderBox = _lyricsScrollController
+              .position.context.storageContext
+              .findRenderObject() as RenderBox?;
+
+          if (scrollRenderBox != null) {
+            // 아이템의 글로벌 위치
+            final itemGlobalPosition = renderBox.localToGlobal(Offset.zero);
+            // 스크롤 뷰포트의 글로벌 위치
+            final scrollGlobalPosition =
+                scrollRenderBox.localToGlobal(Offset.zero);
+
+            // 아이템의 상대적 위치 계산
+            final itemRelativeY =
+                itemGlobalPosition.dy - scrollGlobalPosition.dy;
+            final itemHeight = renderBox.size.height;
+
+            // 현재 스크롤 오프셋을 고려한 아이템의 실제 위치
+            final itemActualPosition =
+                _lyricsScrollController.offset + itemRelativeY;
+
+            // 아이템 중앙을 화면 중앙에 위치시키기 위한 오프셋
+            targetOffset =
+                itemActualPosition + (itemHeight / 2) - (lyricsAreaHeight / 2);
+          } else {
+            // 스크롤 컨테이너를 찾지 못한 경우 추정값 사용
+            targetOffset = _calculateEstimatedOffset(index);
+          }
+        } catch (e) {
+          // 에러 발생 시 추정값 사용
+          targetOffset = _calculateEstimatedOffset(index);
+        }
+      } else {
+        // 렌더링이 안된 경우 추정값 사용
+        targetOffset = _calculateEstimatedOffset(index);
+      }
+
+      // 스크롤 범위 제한
+      final maxScrollExtent = _lyricsScrollController.position.maxScrollExtent;
+      final minScrollExtent = _lyricsScrollController.position.minScrollExtent;
+
+      // 시작점과 끝점에서는 특별 처리
+      double finalOffset;
+
+      if (index <= 1) {
+        // 처음 1-2개 아이템은 상단에 고정
+        finalOffset = minScrollExtent;
+      } else if (index >= totalLyrics - 2) {
+        // 마지막 1-2개 아이템은 하단에 고정
+        finalOffset = maxScrollExtent;
+      } else {
+        // 중간 아이템들은 화면 중앙에 위치
+        finalOffset =
+            math.max(minScrollExtent, math.min(targetOffset, maxScrollExtent));
+      }
+
+      _lyricsScrollController.animateTo(
+        finalOffset,
+        duration: const Duration(milliseconds: 600),
+        curve: Curves.easeOutQuart,
+      );
+    });
 
     _lastAutoScrollIndex = index;
+  }
+
+  /// 추정값으로 오프셋 계산
+  double _calculateEstimatedOffset(int index) {
+    const estimatedItemHeight = 70.0;
+    const estimatedSpacing = 24.0;
+    const lyricsAreaHeight = 380.0;
+
+    final estimatedPosition = index * (estimatedItemHeight + estimatedSpacing);
+    return estimatedPosition - (lyricsAreaHeight / 2);
   }
 
   /// 사용자 스크롤 감지
@@ -570,6 +655,11 @@ class _SongDetailScreenState extends ConsumerState<SongDetailScreen> {
     ParsedLyric parsedLyric, {
     bool isActive = false,
   }) {
+    // GlobalKey 리스트 크기 확장
+    while (_lyricItemKeys.length <= index) {
+      _lyricItemKeys.add(GlobalKey());
+    }
+
     return GestureDetector(
       onTap: () {
         ref.read(lyricsHighlightProvider.notifier).jumpToLyric(index);
@@ -582,6 +672,7 @@ class _SongDetailScreenState extends ConsumerState<SongDetailScreen> {
         }
       },
       child: Container(
+        key: _lyricItemKeys[index],
         margin: EdgeInsets.symmetric(
           vertical: isActive ? 16.0 : 12.0,
           horizontal: 0.0,
@@ -698,6 +789,11 @@ class _SongDetailScreenState extends ConsumerState<SongDetailScreen> {
     final isBothChant = lyric.type == LyricType.both;
     final isFanChant = lyric.type == LyricType.fan;
 
+    // GlobalKey 리스트 크기 확장
+    while (_lyricItemKeys.length <= index) {
+      _lyricItemKeys.add(GlobalKey());
+    }
+
     return GestureDetector(
       onTap: () {
         ref.read(lyricsHighlightProvider.notifier).jumpToLyric(index);
@@ -710,6 +806,7 @@ class _SongDetailScreenState extends ConsumerState<SongDetailScreen> {
         }
       },
       child: Container(
+        key: _lyricItemKeys[index],
         margin: EdgeInsets.symmetric(
           vertical: isActive ? 16.0 : 12.0,
           horizontal: 0.0,
