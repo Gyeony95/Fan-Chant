@@ -7,8 +7,14 @@
   "albumCoverUrl": "https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/35/9f/83/359f83b3-1423-3153-1641-98e948b7fc65/cover_-_EDAM_5_LILAC.jpg/800x800bb.jpg",
   "genre": "K-Pop",
   "hasFanChant": true,
-  "guideLink": "",
+  "guideLink": "https://www.youtube.com/watch?v=REcKDqT4uhQ&ab_channel=%EC%9D%B4%EC%A7%80%EA%B8%88%5BIUOfficial%5D",
   "lyrics": [
+    {
+      "text": "지.은.이.아.이.유.의.블.루.밍",
+      "type": "fan",
+      "startTime": 0,
+      "endTime": 0
+    },
     {
       "text": "‘뭐해?‘라는 두 글자에",
       "type": "artist",
@@ -16,7 +22,7 @@
       "endTime": 2
     },
     {
-      "text": "‘네가 보고 싶어’ 나의 속마음을 담아 우",
+      "text": "‘네가 보고 싶어’ 나의 속마음을 담아 [both:우]",
       "type": "artist",
       "startTime": 2,
       "endTime": 9
@@ -28,19 +34,19 @@
       "endTime": 12
     },
     {
-      "text": "달라지는 내 미묘한 심리를 알까 우",
+      "text": "달라지는 내 미묘한 심리를 알까 [both:우]",
       "type": "artist",
       "startTime": 12,
       "endTime": 18
     },
     {
-      "text": "아니 바쁘지 않아 nothing no no",
+      "text": "아니 바쁘지 않아 [both:nothing no no]",
       "type": "artist",
       "startTime": 18,
       "endTime": 22
     },
     {
-      "text": "잠들어 있지 않아 insomnia nia nia",
+      "text": "잠들어 있지 않아 [both:insomnia nia nia]",
       "type": "artist",
       "startTime": 22,
       "endTime": 27
@@ -52,25 +58,31 @@
       "endTime": 31
     },
     {
-      "text": "응, 나도 너를 생각 중",
+      "text": "응, 나도 너를 생각 중[fan:(응, 아이유를 생각 중)]",
       "type": "artist",
       "startTime": 31,
       "endTime": 36
     },
     {
-      "text": "우리의 네모 칸은 bloom",
+      "text": "(함성)",
+      "type": "fan",
+      "startTime": 31,
+      "endTime": 36
+    },
+    {
+      "text": "우리의 네모 칸은 [both:bloom]",
       "type": "artist",
       "startTime": 36,
       "endTime": 40
     },
     {
       "text": "엄지손가락으로 장미꽃을 피워",
-      "type": "artist",
+      "type": "both",
       "startTime": 40,
       "endTime": 45
     },
     {
-      "text": "향기에 취할 것 같아 우",
+      "text": "향기에 취할 것 같아 [both:우]",
       "type": "artist",
       "startTime": 45,
       "endTime": 49
@@ -82,7 +94,7 @@
       "endTime": 54
     },
     {
-      "text": "I feel bloom I feel bloom I feel bloom",
+      "text": "I feel [both:bloom] I feel [both:bloom] I feel [both:bloom]",
       "type": "artist",
       "startTime": 54,
       "endTime": 68
@@ -94,13 +106,19 @@
       "endTime": 77
     },
     {
+      "text": "지.은.이.아.이.유.의.러.브.포.엠",
+      "type": "fan",
+      "startTime": 68,
+      "endTime": 77
+    },
+    {
       "text": "밤샘 작업으로 업데이트",
       "type": "artist",
       "startTime": 77,
       "endTime": 79
     },
     {
-      "text": "흥미로운 이 작품의 지은이 that’s me 우",
+      "text": "흥미로운 이 작품의 [both:지은이] that’s me [both:우]",
       "type": "artist",
       "startTime": 79,
       "endTime": 86
@@ -112,19 +130,19 @@
       "endTime": 89
     },
     {
-      "text": "2막으로 넘어가기엔 지금이 good timing 우",
+      "text": "2막으로 넘어가기엔 [both:지금이] good timing [both:우]",
       "type": "artist",
       "startTime": 89,
       "endTime": 95
     },
     {
-      "text": "같은 맘인 걸 알아 realize la lize",
+      "text": "같은 맘인 걸 알아 [both:realize la lize]",
       "type": "artist",
       "startTime": 95,
       "endTime": 99
     },
     {
-      "text": "말을 고르지 말아 just reply la la ly",
+      "text": "말을 고르지 말아 just [both:reply la la ly]",
       "type": "artist",
       "startTime": 99,
       "endTime": 104
@@ -136,19 +154,25 @@
       "endTime": 113
     },
     {
-      "text": "우리의 색은 gray and blue",
+      "text": "(러.브.포.엠)",
+      "type": "fan",
+      "startTime": 104,
+      "endTime": 113
+    },
+    {
+      "text": "우리의 색은 gray and [both:blue]",
       "type": "artist",
       "startTime": 113,
       "endTime": 117
     },
     {
       "text": "엄지손가락으로 말풍선을 띄워",
-      "type": "artist",
+      "type": "both",
       "startTime": 117,
       "endTime": 122
     },
     {
-      "text": "금세 터질 것 같아 우",
+      "text": "금세 터질 것 같아 [both:우]",
       "type": "artist",
       "startTime": 122,
       "endTime": 127
@@ -160,7 +184,7 @@
       "endTime": 131
     },
     {
-      "text": "I feel blue. I feel blue. I feel blue.",
+      "text": "I feel [both:blue]. I feel [both:blue]. I feel [both:blue].",
       "type": "artist",
       "startTime": 131,
       "endTime": 145
@@ -173,7 +197,7 @@
     },
     {
       "text": "띄어쓰기없이보낼게사랑인것같애",
-      "type": "artist",
+      "type": "both",
       "startTime": 149,
       "endTime": 154
     },
@@ -184,7 +208,7 @@
       "endTime": 158
     },
     {
-      "text": "꽃잎의 색은 우리 마음 가는 대로 칠해",
+      "text": "[both:꽃잎의] 색은 우리 마음 가는 대로 칠해",
       "type": "artist",
       "startTime": 158,
       "endTime": 163
@@ -196,19 +220,25 @@
       "endTime": 167
     },
     {
+      "text": "(예.쁘.다)",
+      "type": "fan",
+      "startTime": 163,
+      "endTime": 167
+    },
+    {
       "text": "우리의 네모 칸은 bloom",
-      "type": "artist",
+      "type": "both",
       "startTime": 167,
       "endTime": 172
     },
     {
       "text": "엄지손가락으로 장미꽃을 피워",
-      "type": "artist",
+      "type": "both",
       "startTime": 172,
       "endTime": 176
     },
     {
-      "text": "향기에 취할 것 같아 우",
+      "text": "향기에 취할 것 같아 [both:우]",
       "type": "artist",
       "startTime": 176,
       "endTime": 181
@@ -220,7 +250,7 @@
       "endTime": 185
     },
     {
-      "text": "I feel bloom I feel bloom I feel bloom",
+      "text": "I feel [both:bloom] I feel [both:bloom] I feel [both:bloom]",
       "type": "artist",
       "startTime": 185,
       "endTime": 199
@@ -228,6 +258,12 @@
     {
       "text": "너에게 한 송이를 더 보내",
       "type": "artist",
+      "startTime": 199,
+      "endTime": 203
+    },
+    {
+      "text": "(함성)",
+      "type": "fan",
       "startTime": 199,
       "endTime": 203
     }
