@@ -7,7 +7,7 @@
   "albumCoverUrl": "https://is1-ssl.mzstatic.com/image/thumb/Music112/v4/3e/43/d2/3e43d2dc-acd4-5db6-9ae7-99299a044584/cover_KM0019422_1.jpg/800x800bb.jpg",
   "genre": "K-Pop",
   "hasFanChant": true,
-  "guideLink": "",
+  "guideLink": "https://www.youtube.com/watch?v=6ElB5I2r-U8&ab_channel=%EC%9D%B4%EC%A7%80%EA%B8%88%5BIUOfficial%5D",
   "lyrics": [
     {
       "text": "사소한 틈새의 one milli",
@@ -23,37 +23,37 @@
     },
     {
       "text": "잔뜩 찡그려 웃는 버릇이나",
-      "type": "artist",
+      "type": "both",
       "startTime": 10,
       "endTime": 13
     },
     {
       "text": "자주 고르는 단어 하나하나",
-      "type": "artist",
+      "type": "both",
       "startTime": 13,
       "endTime": 16
     },
     {
       "text": "모두 바라보게 만들어",
-      "type": "both",
+      "type": "artist",
       "startTime": 16,
       "endTime": 20
     },
     {
       "text": "널 숨기지 마 Don't be silly",
-      "type": "fan",
+      "type": "artist",
       "startTime": 20,
       "endTime": 22
     },
     {
       "text": "때때로 넌 자신 없어 하지만",
-      "type": "artist",
+      "type": "both",
       "startTime": 22,
       "endTime": 25
     },
     {
       "text": "그 수줍음조차 그저 좋아 난",
-      "type": "artist",
+      "type": "both",
       "startTime": 25,
       "endTime": 28
     },
@@ -65,13 +65,19 @@
     },
     {
       "text": "(손에 닿거나, 아득히 멀어질)",
-      "type": "fan",
+      "type": "both",
       "startTime": 31,
       "endTime": 34
     },
     {
       "text": "네 모든 날들의 어느 열렬한",
       "type": "artist",
+      "startTime": 34,
+      "endTime": 39
+    },
+    {
+      "text": "아이유의!",
+      "type": "fan",
       "startTime": 34,
       "endTime": 39
     },
@@ -89,19 +95,19 @@
     },
     {
       "text": "You're stunning, so stunning",
-      "type": "fan",
+      "type": "artist",
       "startTime": 44,
       "endTime": 47
     },
     {
-      "text": "Go on 이 느낌 이어가",
-      "type": "fan",
+      "text": "[fan:Go on]이 느낌 이어가[fan:(아이유!)]",
+      "type": "artist",
       "startTime": 47,
       "endTime": 52
     },
     {
       "text": "Ballad, Disco, Hip-Hop",
-      "type": "both",
+      "type": "artist",
       "startTime": 52,
       "endTime": 54
     },
@@ -113,36 +119,42 @@
     },
     {
       "text": "좋아 그건 또 그대로",
-      "type": "both",
+      "type": "artist",
       "startTime": 59,
       "endTime": 62
     },
     {
       "text": "I'm stanning, just stanning",
-      "type": "fan",
+      "type": "both",
       "startTime": 62,
       "endTime": 65
     },
     {
       "text": "You",
-      "type": "both",
+      "type": "artist",
       "startTime": 65,
       "endTime": 67
     },
     {
-      "text": "I trust my you",
-      "type": "fan",
+      "text": "I trust my you [fan:I U]",
+      "type": "artist",
       "startTime": 67,
       "endTime": 70
     },
     {
       "text": "가, 너만의 승리를 이뤄",
-      "type": "both",
+      "type": "artist",
       "startTime": 70,
       "endTime": 74
     },
     {
       "text": "I'm stanning, just stanning you",
+      "type": "artist",
+      "startTime": 74,
+      "endTime": 80
+    },
+    {
+      "text": "(영원히! 유애나!)",
       "type": "fan",
       "startTime": 74,
       "endTime": 80
@@ -161,13 +173,13 @@
     },
     {
       "text": "스르르 기분 좋은 웃음이 나",
-      "type": "artist",
+      "type": "both",
       "startTime": 86,
       "endTime": 89
     },
     {
       "text": "또 어떻게든 파고들어 와 넌",
-      "type": "artist",
+      "type": "both",
       "startTime": 89,
       "endTime": 92
     },
@@ -179,18 +191,18 @@
     },
     {
       "text": "(소란하거나, 아득히 고요할)",
-      "type": "fan",
+      "type": "both",
       "startTime": 95,
       "endTime": 98
     },
     {
-      "text": "그 모든 날들의 어느 열렬한",
+      "text": "그 모든 날들의 어느 열렬한[fan:아이유의!]",
       "type": "artist",
       "startTime": 98,
       "endTime": 103
     },
     {
-      "text": "관객이 될게",
+      "text": "관객이 될게 (함성!)",
       "type": "both",
       "startTime": 103,
       "endTime": 108
@@ -203,19 +215,19 @@
     },
     {
       "text": "You're stunning, so stunning",
-      "type": "fan",
+      "type": "artist",
       "startTime": 110,
       "endTime": 114
     },
     {
-      "text": "Go on 이 느낌 이어가",
-      "type": "fan",
+      "text": "[fan:Go on]이 느낌 이어가[fan:(아이유!)]",
+      "type": "artist",
       "startTime": 114,
       "endTime": 119
     },
     {
       "text": "Ballad, Disco, Hip-Hop",
-      "type": "both",
+      "type": "artist",
       "startTime": 119,
       "endTime": 121
     },
@@ -227,13 +239,13 @@
     },
     {
       "text": "Oh 좋아 그건 또 그대로",
-      "type": "both",
+      "type": "artist",
       "startTime": 125,
       "endTime": 129
     },
     {
       "text": "I'm stanning, just stanning you",
-      "type": "fan",
+      "type": "both",
       "startTime": 129,
       "endTime": 132
     },
@@ -251,7 +263,7 @@
     },
     {
       "text": "놀아 어린아이처럼",
-      "type": "fan",
+      "type": "artist",
       "startTime": 139,
       "endTime": 143
     },
@@ -263,6 +275,12 @@
     },
     {
       "text": "그저 넌 너답게 웃어줘, 날아줘",
+      "type": "artist",
+      "startTime": 147,
+      "endTime": 159
+    },
+    {
+      "text": "(함성)",
       "type": "both",
       "startTime": 147,
       "endTime": 159
@@ -275,19 +293,19 @@
     },
     {
       "text": "You're stunning, so stunning",
-      "type": "fan",
+      "type": "artist",
       "startTime": 162,
       "endTime": 165
     },
     {
-      "text": "Go on 노래를 이어가",
-      "type": "fan",
+      "text": "[fan:Go on]이 느낌 이어가[fan:(아이유!)]",
+      "type": "artist",
       "startTime": 165,
       "endTime": 171
     },
     {
       "text": "Country, Classic, Lo-Fi",
-      "type": "both",
+      "type": "artist",
       "startTime": 171,
       "endTime": 173
     },
@@ -299,36 +317,42 @@
     },
     {
       "text": "Oh 좋아 그건 또 그대로",
-      "type": "both",
+      "type": "artist",
       "startTime": 176,
       "endTime": 180
     },
     {
       "text": "I'm stanning, just stanning",
-      "type": "fan",
+      "type": "both",
       "startTime": 180,
       "endTime": 183
     },
     {
       "text": "You",
-      "type": "both",
+      "type": "artist",
       "startTime": 183,
       "endTime": 185
     },
     {
-      "text": "I trust my you",
-      "type": "fan",
+      "text": "I trust my you [fan:I U]",
+      "type": "artist",
       "startTime": 185,
       "endTime": 189
     },
     {
       "text": "가, 너만의 승리를 이뤄",
-      "type": "both",
+      "type": "artist",
       "startTime": 189,
       "endTime": 192
     },
     {
       "text": "I'm stanning, just stanning you",
+      "type": "both",
+      "startTime": 192,
+      "endTime": 198
+    },
+    {
+      "text": "아!이!유! (함성)",
       "type": "fan",
       "startTime": 192,
       "endTime": 198
