@@ -1,0 +1,336 @@
+{
+  "appleMusicId": "1731352618",
+  "title": "관객이 될게",
+  "artist": "아이유 (IU)",
+  "album": "",
+  "releaseDate": "",
+  "albumCoverUrl": "https://is1-ssl.mzstatic.com/image/thumb/Music112/v4/3e/43/d2/3e43d2dc-acd4-5db6-9ae7-99299a044584/cover_KM0019422_1.jpg/800x800bb.jpg",
+  "genre": "K-Pop",
+  "hasFanChant": true,
+  "lyrics": [
+    {
+      "text": "사소한 틈새의 one milli",
+      "type": "artist",
+      "startTime": 4,
+      "endTime": 7
+    },
+    {
+      "text": "그게 널 다르게 만들지",
+      "type": "artist",
+      "startTime": 7,
+      "endTime": 10
+    },
+    {
+      "text": "잔뜩 찡그려 웃는 버릇이나",
+      "type": "artist",
+      "startTime": 10,
+      "endTime": 13
+    },
+    {
+      "text": "자주 고르는 단어 하나하나",
+      "type": "artist",
+      "startTime": 13,
+      "endTime": 16
+    },
+    {
+      "text": "모두 바라보게 만들어",
+      "type": "both",
+      "startTime": 16,
+      "endTime": 20
+    },
+    {
+      "text": "널 숨기지 마 Don't be silly",
+      "type": "fan",
+      "startTime": 20,
+      "endTime": 22
+    },
+    {
+      "text": "때때로 넌 자신 없어 하지만",
+      "type": "artist",
+      "startTime": 22,
+      "endTime": 25
+    },
+    {
+      "text": "그 수줍음조차 그저 좋아 난",
+      "type": "artist",
+      "startTime": 25,
+      "endTime": 28
+    },
+    {
+      "text": "흐리거나, 시리도록 맑을",
+      "type": "artist",
+      "startTime": 28,
+      "endTime": 31
+    },
+    {
+      "text": "(손에 닿거나, 아득히 멀어질)",
+      "type": "fan",
+      "startTime": 31,
+      "endTime": 34
+    },
+    {
+      "text": "네 모든 날들의 어느 열렬한",
+      "type": "artist",
+      "startTime": 34,
+      "endTime": 39
+    },
+    {
+      "text": "관객이 될게",
+      "type": "both",
+      "startTime": 39,
+      "endTime": 40
+    },
+    {
+      "text": "난 나의 너를 믿어",
+      "type": "artist",
+      "startTime": 40,
+      "endTime": 44
+    },
+    {
+      "text": "You're stunning, so stunning",
+      "type": "fan",
+      "startTime": 44,
+      "endTime": 47
+    },
+    {
+      "text": "Go on 이 느낌 이어가",
+      "type": "fan",
+      "startTime": 47,
+      "endTime": 52
+    },
+    {
+      "text": "Ballad, Disco, Hip-Hop",
+      "type": "both",
+      "startTime": 52,
+      "endTime": 54
+    },
+    {
+      "text": "상관없어 너 끌리는 대로 해",
+      "type": "artist",
+      "startTime": 54,
+      "endTime": 59
+    },
+    {
+      "text": "좋아 그건 또 그대로",
+      "type": "both",
+      "startTime": 59,
+      "endTime": 62
+    },
+    {
+      "text": "I'm stanning, just stanning",
+      "type": "fan",
+      "startTime": 62,
+      "endTime": 65
+    },
+    {
+      "text": "You",
+      "type": "both",
+      "startTime": 65,
+      "endTime": 67
+    },
+    {
+      "text": "I trust my you",
+      "type": "fan",
+      "startTime": 67,
+      "endTime": 70
+    },
+    {
+      "text": "가, 너만의 승리를 이뤄",
+      "type": "both",
+      "startTime": 70,
+      "endTime": 74
+    },
+    {
+      "text": "I'm stanning, just stanning you",
+      "type": "fan",
+      "startTime": 74,
+      "endTime": 80
+    },
+    {
+      "text": "오늘도 스치듯 그 말이",
+      "type": "artist",
+      "startTime": 80,
+      "endTime": 83
+    },
+    {
+      "text": "날 쉬게 하는 걸 아는지",
+      "type": "artist",
+      "startTime": 83,
+      "endTime": 86
+    },
+    {
+      "text": "스르르 기분 좋은 웃음이 나",
+      "type": "artist",
+      "startTime": 86,
+      "endTime": 89
+    },
+    {
+      "text": "또 어떻게든 파고들어 와 넌",
+      "type": "artist",
+      "startTime": 89,
+      "endTime": 92
+    },
+    {
+      "text": "어둡거나, 눈부시게 밝을",
+      "type": "artist",
+      "startTime": 92,
+      "endTime": 95
+    },
+    {
+      "text": "(소란하거나, 아득히 고요할)",
+      "type": "fan",
+      "startTime": 95,
+      "endTime": 98
+    },
+    {
+      "text": "그 모든 날들의 어느 열렬한",
+      "type": "artist",
+      "startTime": 98,
+      "endTime": 103
+    },
+    {
+      "text": "관객이 될게",
+      "type": "both",
+      "startTime": 103,
+      "endTime": 108
+    },
+    {
+      "text": "난 나의 너를 믿어",
+      "type": "artist",
+      "startTime": 108,
+      "endTime": 110
+    },
+    {
+      "text": "You're stunning, so stunning",
+      "type": "fan",
+      "startTime": 110,
+      "endTime": 114
+    },
+    {
+      "text": "Go on 이 느낌 이어가",
+      "type": "fan",
+      "startTime": 114,
+      "endTime": 119
+    },
+    {
+      "text": "Ballad, Disco, Hip-Hop",
+      "type": "both",
+      "startTime": 119,
+      "endTime": 121
+    },
+    {
+      "text": "상관없어 너 끌리는 대로 해",
+      "type": "artist",
+      "startTime": 121,
+      "endTime": 125
+    },
+    {
+      "text": "Oh 좋아 그건 또 그대로",
+      "type": "both",
+      "startTime": 125,
+      "endTime": 129
+    },
+    {
+      "text": "I'm stanning, just stanning you",
+      "type": "fan",
+      "startTime": 129,
+      "endTime": 132
+    },
+    {
+      "text": "막이 오르는 순간",
+      "type": "artist",
+      "startTime": 132,
+      "endTime": 135
+    },
+    {
+      "text": "조금 철이 없길 바라",
+      "type": "artist",
+      "startTime": 135,
+      "endTime": 139
+    },
+    {
+      "text": "놀아 어린아이처럼",
+      "type": "fan",
+      "startTime": 139,
+      "endTime": 143
+    },
+    {
+      "text": "다 숨죽인 무대 한가운데에서",
+      "type": "artist",
+      "startTime": 143,
+      "endTime": 147
+    },
+    {
+      "text": "그저 넌 너답게 웃어줘, 날아줘",
+      "type": "both",
+      "startTime": 147,
+      "endTime": 159
+    },
+    {
+      "text": "넌 너의 나를 믿어",
+      "type": "artist",
+      "startTime": 159,
+      "endTime": 162
+    },
+    {
+      "text": "You're stunning, so stunning",
+      "type": "fan",
+      "startTime": 162,
+      "endTime": 165
+    },
+    {
+      "text": "Go on 노래를 이어가",
+      "type": "fan",
+      "startTime": 165,
+      "endTime": 171
+    },
+    {
+      "text": "Country, Classic, Lo-Fi",
+      "type": "both",
+      "startTime": 171,
+      "endTime": 173
+    },
+    {
+      "text": "상관없어 너 끌리는 대로 해",
+      "type": "artist",
+      "startTime": 173,
+      "endTime": 176
+    },
+    {
+      "text": "Oh 좋아 그건 또 그대로",
+      "type": "both",
+      "startTime": 176,
+      "endTime": 180
+    },
+    {
+      "text": "I'm stanning, just stanning",
+      "type": "fan",
+      "startTime": 180,
+      "endTime": 183
+    },
+    {
+      "text": "You",
+      "type": "both",
+      "startTime": 183,
+      "endTime": 185
+    },
+    {
+      "text": "I trust my you",
+      "type": "fan",
+      "startTime": 185,
+      "endTime": 189
+    },
+    {
+      "text": "가, 너만의 승리를 이뤄",
+      "type": "both",
+      "startTime": 189,
+      "endTime": 192
+    },
+    {
+      "text": "I'm stanning, just stanning you",
+      "type": "fan",
+      "startTime": 192,
+      "endTime": 198
+    }
+  ]
+} 
