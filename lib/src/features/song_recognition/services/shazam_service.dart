@@ -189,7 +189,7 @@ class ShazamService {
             final mediaItems = result.mediaItems;
             if (mediaItems.isNotEmpty) {
               final mediaItem = mediaItems.first;
-
+              debugPrint('$mediaItems');
               // Apple Music ID 가져오기
               final appleMusicId =
                   _getAppleMusicIdFromUrl(mediaItem.appleMusicUrl);
@@ -217,7 +217,6 @@ class ShazamService {
                   hasFanChant: false, // 가사 정보가 없으므로 false
                   appleMusicId: appleMusicId, // Apple Music ID 저장
                 );
-
                 // 노래 정보 설정
                 _matchResult = song;
               }

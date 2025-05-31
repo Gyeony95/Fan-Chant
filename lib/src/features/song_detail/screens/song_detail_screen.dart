@@ -683,25 +683,10 @@ class _SongDetailScreenState extends ConsumerState<SongDetailScreen> {
 
           // 재생 컨트롤
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              IconButton(
-                onPressed: () {},
-                icon: const Icon(
-                  FlutterRemix.repeat_line,
-                  color: AppColors.textMedium,
-                ),
-              ),
               Row(
                 children: [
-                  IconButton(
-                    onPressed: () {},
-                    icon: const Icon(
-                      FlutterRemix.skip_back_line,
-                      size: 28,
-                      color: AppColors.textDark,
-                    ),
-                  ),
                   const SizedBox(width: 8),
                   GestureDetector(
                     onTap: () {
@@ -733,22 +718,7 @@ class _SongDetailScreenState extends ConsumerState<SongDetailScreen> {
                     ),
                   ),
                   const SizedBox(width: 8),
-                  IconButton(
-                    onPressed: () {},
-                    icon: const Icon(
-                      FlutterRemix.skip_forward_line,
-                      size: 28,
-                      color: AppColors.textDark,
-                    ),
-                  ),
                 ],
-              ),
-              IconButton(
-                onPressed: () {},
-                icon: const Icon(
-                  FlutterRemix.volume_up_line,
-                  color: AppColors.textMedium,
-                ),
               ),
             ],
           ),
