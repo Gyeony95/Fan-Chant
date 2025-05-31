@@ -30,6 +30,10 @@ class _SongDetailScreenState extends ConsumerState<SongDetailScreen> {
   // 가사 스크롤 컨트롤러
   final ScrollController _lyricsScrollController = ScrollController();
 
+  // 자동 스크롤 상태 관리
+  bool _isUserScrolling = false;
+  int _lastAutoScrollIndex = -1;
+
   @override
   void initState() {
     super.initState();
@@ -70,6 +74,65 @@ class _SongDetailScreenState extends ConsumerState<SongDetailScreen> {
     // 스크롤 컨트롤러 해제
     _lyricsScrollController.dispose();
     super.dispose();
+  }
+
+  /// 자동 스크롤 토글
+  void _toggleAutoScroll() {
+    setState(() {
+      _isUserScrolling = false;
+    });
+
+    // 재생 상태에 따라 현재 가사 위치로 이동
+    final playbackState = ref.read(playbackStateProvider);
+    if (playbackState.isPlaying) {
+      final currentSong = ref.read(currentSongProvider);
+      final lyrics = currentSong?.lyrics ?? widget.song.lyrics;
+      final currentLyricIndex = ref.read(lyricsHighlightProvider);
+
+      if (lyrics != null &&
+          currentLyricIndex >= 0 &&
+          currentLyricIndex < lyrics.length) {
+        _scrollToLyric(currentLyricIndex, lyrics.length);
+      }
+    }
+  }
+
+  /// 지정된 가사로 스크롤
+  void _scrollToLyric(int index, int totalLyrics) {
+    if (!_lyricsScrollController.hasClients) return;
+
+    final itemHeight = 70.0;
+    final screenHeight = 380.0;
+    final offset = (index * itemHeight) - (screenHeight / 2) + (itemHeight / 2);
+    final maxScrollExtent = _lyricsScrollController.position.maxScrollExtent;
+    final targetOffset = math.max(0.0, math.min(offset, maxScrollExtent));
+
+    _lyricsScrollController.animateTo(
+      targetOffset,
+      duration: const Duration(milliseconds: 600),
+      curve: Curves.easeOutCubic,
+    );
+
+    _lastAutoScrollIndex = index;
+  }
+
+  /// 사용자 스크롤 감지
+  bool _onScrollNotification(ScrollNotification notification) {
+    if (notification is ScrollStartNotification) {
+      // 사용자가 스크롤을 시작한 경우
+      if (notification.dragDetails != null) {
+        setState(() {
+          _isUserScrolling = true;
+        });
+
+        // 재생 중이면 일시정지
+        final playbackState = ref.read(playbackStateProvider);
+        if (playbackState.isPlaying) {
+          ref.read(playbackStateProvider.notifier).pause();
+        }
+      }
+    }
+    return true;
   }
 
   @override
@@ -394,51 +457,48 @@ class _SongDetailScreenState extends ConsumerState<SongDetailScreen> {
   /// 애플 뮤직 스타일 가사 위젯
   Widget _buildAppleMusicStyleLyrics(
       List<LyricLine> lyrics, int currentLyricIndex) {
-    // 현재 가사 인덱스가 변경되면 스크롤 위치 업데이트
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (currentLyricIndex >= 0 && currentLyricIndex < lyrics.length) {
-        final itemHeight = 70.0; // 각 가사 항목의 대략적인 높이
-        final screenHeight = 380.0; // 가사 컨테이너의 높이
-        final offset = (currentLyricIndex * itemHeight) -
-            (screenHeight / 2) +
-            (itemHeight / 2);
+    final playbackState = ref.watch(playbackStateProvider);
 
-        if (_lyricsScrollController.hasClients) {
-          _lyricsScrollController.animateTo(
-            math.max(0, offset),
-            duration: const Duration(milliseconds: 600),
-            curve: Curves.easeOutCubic,
-          );
-        }
-      }
-    });
+    // 재생 중이고 사용자가 스크롤하지 않을 때만 자동 스크롤 실행
+    if (playbackState.isPlaying &&
+        !_isUserScrolling &&
+        currentLyricIndex >= 0 &&
+        currentLyricIndex < lyrics.length &&
+        currentLyricIndex != _lastAutoScrollIndex) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _scrollToLyric(currentLyricIndex, lyrics.length);
+      });
+    }
 
-    return ShaderMask(
-      shaderCallback: (Rect rect) {
-        return LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            Colors.transparent,
-            Colors.white,
-            Colors.white,
-            Colors.transparent
-          ],
-          stops: const [0.0, 0.1, 0.9, 1.0],
-        ).createShader(rect);
-      },
-      blendMode: BlendMode.dstIn,
-      child: ListView.builder(
-        controller: _lyricsScrollController,
-        physics: const BouncingScrollPhysics(),
-        padding: const EdgeInsets.symmetric(vertical: 80, horizontal: 20),
-        itemCount: lyrics.length,
-        itemBuilder: (context, index) {
-          final lyric = lyrics[index];
-          final isActive = index == currentLyricIndex;
-
-          return _buildAppleMusicLyricItem(lyric, index, isActive: isActive);
+    return NotificationListener<ScrollNotification>(
+      onNotification: _onScrollNotification,
+      child: ShaderMask(
+        shaderCallback: (Rect rect) {
+          return LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Colors.transparent,
+              Colors.white,
+              Colors.white,
+              Colors.transparent
+            ],
+            stops: const [0.0, 0.1, 0.9, 1.0],
+          ).createShader(rect);
         },
+        blendMode: BlendMode.dstIn,
+        child: ListView.builder(
+          controller: _lyricsScrollController,
+          physics: const BouncingScrollPhysics(),
+          padding: const EdgeInsets.symmetric(vertical: 80, horizontal: 20),
+          itemCount: lyrics.length,
+          itemBuilder: (context, index) {
+            final lyric = lyrics[index];
+            final isActive = index == currentLyricIndex;
+
+            return _buildAppleMusicLyricItem(lyric, index, isActive: isActive);
+          },
+        ),
       ),
     );
   }
@@ -453,6 +513,17 @@ class _SongDetailScreenState extends ConsumerState<SongDetailScreen> {
       onTap: () {
         // 가사 터치 시 해당 시간으로 이동
         ref.read(lyricsHighlightProvider.notifier).jumpToLyric(index);
+
+        // 사용자 스크롤 상태 해제 및 재생 시작
+        setState(() {
+          _isUserScrolling = false;
+        });
+
+        // 재생 시작
+        final playbackState = ref.read(playbackStateProvider);
+        if (!playbackState.isPlaying) {
+          ref.read(playbackStateProvider.notifier).play();
+        }
       },
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 400),
@@ -693,6 +764,11 @@ class _SongDetailScreenState extends ConsumerState<SongDetailScreen> {
                       ref
                           .read(playbackStateProvider.notifier)
                           .togglePlayPause();
+
+                      // 재생 시작 시 자동 스크롤도 재시작
+                      if (!playbackState.isPlaying) {
+                        _toggleAutoScroll();
+                      }
                     },
                     child: Container(
                       width: 56,
