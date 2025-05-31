@@ -10,6 +10,7 @@ import 'package:fan_chant/src/features/song_recognition/providers/song_provider.
 import 'package:fan_chant/src/features/song_recognition/services/lyrics_service.dart';
 import 'package:fan_chant/src/features/song_detail/screens/fullscreen_lyrics_screen.dart';
 import 'package:flutter_remix/flutter_remix.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'dart:math' as math;
 
 /// 파싱된 가사 정보를 담는 클래스
@@ -222,6 +223,41 @@ class _SongDetailScreenState extends ConsumerState<SongDetailScreen> {
 
     final estimatedPosition = index * (estimatedItemHeight + estimatedSpacing);
     return estimatedPosition - (lyricsAreaHeight / 2);
+  }
+
+  /// 가이드 링크 열기
+  Future<void> _openGuideLink() async {
+    final currentSong = ref.read(currentSongProvider);
+    final song = currentSong ?? widget.song;
+
+    if (song.guideLink != null && song.guideLink!.isNotEmpty) {
+      try {
+        final uri = Uri.parse(song.guideLink!);
+        if (await canLaunchUrl(uri)) {
+          await launchUrl(uri, mode: LaunchMode.externalApplication);
+        } else {
+          // 링크를 열 수 없는 경우 스낵바 표시
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('링크를 열 수 없습니다.'),
+                duration: Duration(seconds: 2),
+              ),
+            );
+          }
+        }
+      } catch (e) {
+        // 오류 발생 시 스낵바 표시
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('링크 형식이 올바르지 않습니다.'),
+              duration: Duration(seconds: 2),
+            ),
+          );
+        }
+      }
+    }
   }
 
   /// 사용자 스크롤 감지
@@ -443,20 +479,23 @@ class _SongDetailScreenState extends ConsumerState<SongDetailScreen> {
                 overflow: TextOverflow.ellipsis,
               ),
               const SizedBox(height: 6),
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 8,
-                  vertical: 3,
-                ),
-                decoration: BoxDecoration(
-                  color: AppColors.primary.withOpacity(0.1),
-                  borderRadius:
-                      BorderRadius.circular(AppDimensions.borderRadiusFull),
-                ),
-                child: Text(
-                  '응원법 가이드',
-                  style: AppTextStyles.labelSmall.copyWith(
-                    color: AppColors.primary,
+              GestureDetector(
+                onTap: _openGuideLink,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 3,
+                  ),
+                  decoration: BoxDecoration(
+                    color: AppColors.primary.withOpacity(0.1),
+                    borderRadius:
+                        BorderRadius.circular(AppDimensions.borderRadiusFull),
+                  ),
+                  child: Text(
+                    '응원법 가이드',
+                    style: AppTextStyles.labelSmall.copyWith(
+                      color: AppColors.primary,
+                    ),
                   ),
                 ),
               ),

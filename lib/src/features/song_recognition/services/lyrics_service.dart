@@ -66,6 +66,7 @@ class LyricsService {
         genre: jsonData['genre'],
         hasFanChant: jsonData['hasFanChant'] ?? false,
         lyrics: lyrics,
+        guideLink: jsonData['guideLink'],
       );
 
       // 캐시에 저장

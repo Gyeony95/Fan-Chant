@@ -54,6 +54,10 @@ class Song {
   @HiveField(11)
   final String? appleMusicId;
 
+  /// 가이드 링크
+  @HiveField(12)
+  final String? guideLink;
+
   Song({
     String? id,
     required this.title,
@@ -67,6 +71,7 @@ class Song {
     this.isFavorite = false,
     DateTime? recognizedAt,
     this.appleMusicId,
+    this.guideLink,
   })  : this.id = id ?? const Uuid().v4(),
         this.recognizedAt = recognizedAt ?? DateTime.now();
 

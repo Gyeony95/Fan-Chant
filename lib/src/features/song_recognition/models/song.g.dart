@@ -29,13 +29,14 @@ class SongAdapter extends TypeAdapter<Song> {
       isFavorite: fields[9] as bool,
       recognizedAt: fields[10] as DateTime?,
       appleMusicId: fields[11] as String?,
+      guideLink: fields[12] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, Song obj) {
     writer
-      ..writeByte(12)
+      ..writeByte(13)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -59,7 +60,9 @@ class SongAdapter extends TypeAdapter<Song> {
       ..writeByte(10)
       ..write(obj.recognizedAt)
       ..writeByte(11)
-      ..write(obj.appleMusicId);
+      ..write(obj.appleMusicId)
+      ..writeByte(12)
+      ..write(obj.guideLink);
   }
 
   @override

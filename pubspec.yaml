@@ -44,7 +44,6 @@ dependencies:
   flutter_remix: ^0.0.1
   flutter_launcher_icons: 0.14.3
 
-
   # Audio recognition - placeholder for actual implementation
   # audio_recognition_plugin: ^1.0.0
   flutter_shazam_kit: ^1.0.2
@@ -52,6 +51,12 @@ dependencies:
   hive_flutter: ^1.1.0
   path_provider: ^2.1.5
   uuid: ^4.5.1
+
+  # HTTP client for API calls
+  http: ^1.2.0
+  
+  # URL launcher
+  url_launcher: ^6.2.2
 
 dev_dependencies:
   flutter_test:
