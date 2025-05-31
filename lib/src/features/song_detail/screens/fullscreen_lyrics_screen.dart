@@ -12,16 +12,35 @@ import 'dart:math' as math;
 
 /// 파싱된 가사 정보를 담는 클래스
 class ParsedLyric {
-  final String cleanText; // 마크업이 제거된 깨끗한 가사
-  final List<FanChantPart> fanChants; // 추출된 팬 응원 파트들
+  final List<LyricComponent> components; // 순서가 유지된 컴포넌트들
 
   ParsedLyric({
-    required this.cleanText,
-    required this.fanChants,
+    required this.components,
   });
 }
 
-/// 팬 응원 파트 정보를 담는 클래스
+/// 가사 컴포넌트 (텍스트 또는 팬 응원)
+abstract class LyricComponent {}
+
+/// 일반 텍스트 컴포넌트
+class TextComponent extends LyricComponent {
+  final String text;
+
+  TextComponent(this.text);
+}
+
+/// 팬 응원 컴포넌트
+class FanChantComponent extends LyricComponent {
+  final String text;
+  final LyricType type;
+
+  FanChantComponent({
+    required this.text,
+    required this.type,
+  });
+}
+
+/// 팬 응원 파트 정보를 담는 클래스 (기존 호환성용)
 class FanChantPart {
   final String text;
   final LyricType type;
@@ -104,30 +123,47 @@ class _FullScreenLyricsScreenState
     }
   }
 
-  /// 가사 텍스트에서 팬 응원 파트를 파싱하는 함수
+  /// 가사 텍스트에서 팬 응원 파트를 순서대로 파싱하는 함수
   ParsedLyric _parseLyricText(String text) {
-    // [fan:텍스트] 또는 [both:텍스트] 패턴을 찾는 정규식
     final RegExp fanChantRegex = RegExp(r'\[(fan|both):([^\]]+)\]');
-    final List<FanChantPart> fanChants = [];
+    final List<LyricComponent> components = [];
 
-    // 모든 매치를 찾아서 팬 응원 파트 추출
+    int lastEnd = 0;
     final matches = fanChantRegex.allMatches(text);
+
     for (final match in matches) {
+      // 마크업 이전의 텍스트가 있으면 추가
+      if (match.start > lastEnd) {
+        final beforeText = text.substring(lastEnd, match.start).trim();
+        if (beforeText.isNotEmpty) {
+          components.add(TextComponent(beforeText));
+        }
+      }
+
+      // 마크업 컴포넌트 추가
       final typeString = match.group(1)!;
       final chantText = match.group(2)!;
-
       final LyricType type =
           typeString == 'fan' ? LyricType.fan : LyricType.both;
-      fanChants.add(FanChantPart(text: chantText, type: type));
+      components.add(FanChantComponent(text: chantText, type: type));
+
+      lastEnd = match.end;
     }
 
-    // 마크업을 제거한 깨끗한 가사 텍스트 생성
-    final cleanText = text.replaceAll(fanChantRegex, '').trim();
+    // 마지막 텍스트가 있으면 추가
+    if (lastEnd < text.length) {
+      final afterText = text.substring(lastEnd).trim();
+      if (afterText.isNotEmpty) {
+        components.add(TextComponent(afterText));
+      }
+    }
 
-    return ParsedLyric(
-      cleanText: cleanText,
-      fanChants: fanChants,
-    );
+    // 컴포넌트가 없으면 전체 텍스트를 하나의 컴포넌트로
+    if (components.isEmpty) {
+      components.add(TextComponent(text));
+    }
+
+    return ParsedLyric(components: components);
   }
 
   /// 개선된 스크롤 함수
@@ -579,93 +615,74 @@ class _FullScreenLyricsScreenState
     );
   }
 
-  /// 전체화면용 리치 텍스트
+  /// 전체화면용 리치 텍스트 (순서 유지)
   Widget _buildFullScreenRichText(
     ParsedLyric parsedLyric, {
     bool isActive = false,
   }) {
-    final originalText = parsedLyric.cleanText;
-    final fanChants = parsedLyric.fanChants;
-
-    if (fanChants.isEmpty) {
-      return AnimatedDefaultTextStyle(
-        duration: const Duration(milliseconds: 300),
-        style: TextStyle(
-          color: isActive ? Colors.white : Colors.white.withOpacity(0.6),
-          fontSize: 26, // 고정 크기 (전체화면용)
-          fontWeight: isActive ? FontWeight.w700 : FontWeight.w500,
-          height: 1.4, // 줄간격 고정
-        ),
-        textAlign: TextAlign.center,
-        child: Text(
-          originalText,
-          maxLines: 4,
-          overflow: TextOverflow.ellipsis,
-        ),
-      );
-    }
-
     return Wrap(
       alignment: WrapAlignment.center,
       crossAxisAlignment: WrapCrossAlignment.center,
-      children: [
-        // 메인 가사 텍스트
-        AnimatedDefaultTextStyle(
-          duration: const Duration(milliseconds: 300),
-          style: TextStyle(
-            color: isActive ? Colors.white : Colors.white.withOpacity(0.6),
-            fontSize: 26, // 고정 크기
-            fontWeight: isActive ? FontWeight.w700 : FontWeight.w500,
-            height: 1.4, // 줄간격 고정
-          ),
-          child: Text(
-            originalText,
-            textAlign: TextAlign.center,
-            maxLines: 4,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ),
-
-        // 팬 응원 파트들을 인라인으로 표시
-        ...fanChants.map((fanChant) => Container(
-              margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              decoration: BoxDecoration(
-                color: fanChant.type == LyricType.fan
-                    ? AppColors.secondary.withOpacity(isActive ? 0.9 : 0.8)
-                    : AppColors.primary.withOpacity(isActive ? 0.9 : 0.8),
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(
-                  color: fanChant.type == LyricType.fan
-                      ? AppColors.secondary
-                      : AppColors.primary,
-                  width: isActive ? 2 : 1.5, // 테두리로 활성화 표시
+      runAlignment: WrapAlignment.center,
+      children: parsedLyric.components.map((component) {
+        if (component is TextComponent) {
+          // 일반 텍스트 컴포넌트
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
+            child: Text(
+              component.text,
+              style: TextStyle(
+                color: isActive ? Colors.white : Colors.white.withOpacity(0.6),
+                fontSize: 26, // 고정 크기 (전체화면용)
+                fontWeight: isActive ? FontWeight.w700 : FontWeight.w500,
+                height: 1.4, // 줄간격 고정
+              ),
+              textAlign: TextAlign.center,
+            ),
+          );
+        } else if (component is FanChantComponent) {
+          // 팬 응원 컴포넌트
+          return Container(
+            margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            decoration: BoxDecoration(
+              color: component.type == LyricType.fan
+                  ? AppColors.secondary.withOpacity(isActive ? 0.9 : 0.8)
+                  : AppColors.primary.withOpacity(isActive ? 0.9 : 0.8),
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(
+                color: component.type == LyricType.fan
+                    ? AppColors.secondary
+                    : AppColors.primary,
+                width: isActive ? 2 : 1.5, // 테두리로 활성화 표시
+              ),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  component.type == LyricType.fan
+                      ? Icons.mic_external_on
+                      : Icons.people,
+                  size: 18,
+                  color: Colors.white,
                 ),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(
-                    fanChant.type == LyricType.fan
-                        ? Icons.mic_external_on
-                        : Icons.people,
-                    size: 18,
+                const SizedBox(width: 8),
+                Text(
+                  component.text,
+                  style: const TextStyle(
                     color: Colors.white,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 16, // 고정 크기
+                    height: 1.2,
                   ),
-                  const SizedBox(width: 8),
-                  Text(
-                    fanChant.text,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w700,
-                      fontSize: 16, // 고정 크기
-                      height: 1.2,
-                    ),
-                  ),
-                ],
-              ),
-            )),
-      ],
+                ),
+              ],
+            ),
+          );
+        }
+        return const SizedBox.shrink(); // fallback
+      }).toList(),
     );
   }
 
