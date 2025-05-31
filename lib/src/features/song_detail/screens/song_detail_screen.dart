@@ -8,6 +8,7 @@ import 'package:fan_chant/src/features/song_recognition/models/song.dart';
 import 'package:fan_chant/src/features/song_detail/providers/song_detail_provider.dart';
 import 'package:fan_chant/src/features/song_recognition/providers/song_provider.dart';
 import 'package:fan_chant/src/features/song_recognition/services/lyrics_service.dart';
+import 'package:fan_chant/src/features/song_detail/screens/fullscreen_lyrics_screen.dart';
 import 'package:flutter_remix/flutter_remix.dart';
 import 'dart:math' as math;
 
@@ -298,8 +299,8 @@ class _SongDetailScreenState extends ConsumerState<SongDetailScreen> {
                       // 가사 및 응원법
                       _buildLyricsAndChant(currentLyricIndex),
 
-                      // 추가 정보
-                      _buildAdditionalInfo(),
+                      // // 추가 정보
+                      // _buildAdditionalInfo(),
                     ],
                   ),
                 ),
@@ -339,7 +340,6 @@ class _SongDetailScreenState extends ConsumerState<SongDetailScreen> {
         ],
       ),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           // 뒤로가기 버튼
           IconButton(
@@ -348,44 +348,58 @@ class _SongDetailScreenState extends ConsumerState<SongDetailScreen> {
           ),
 
           // 제목
-          Text(
-            widget.song.title,
-            style: AppTextStyles.title,
+          Expanded(
+            child: Text(
+              widget.song.title,
+              style: AppTextStyles.title,
+              textAlign: TextAlign.center,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
           ),
 
-          // 좋아요 버튼
-          IconButton(
-            onPressed: () async {
-              // 찜 상태 토글
-              await songRecognition.toggleFavorite(song);
+          // 액션 버튼들
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // 좋아요 버튼
+              IconButton(
+                onPressed: () async {
+                  // 찜 상태 토글
+                  await songRecognition.toggleFavorite(song);
 
-              // 현재 노래 상태 업데이트
-              if (currentSong != null) {
-                final updatedSong = Song(
-                  id: currentSong.id,
-                  title: currentSong.title,
-                  artist: currentSong.artist,
-                  album: currentSong.album,
-                  albumCoverUrl: currentSong.albumCoverUrl,
-                  releaseDate: currentSong.releaseDate,
-                  genre: currentSong.genre,
-                  hasFanChant: currentSong.hasFanChant,
-                  lyrics: currentSong.lyrics,
-                  isFavorite: !isFavorite, // 상태 반전
-                  recognizedAt: currentSong.recognizedAt,
-                );
-                ref
-                    .read(currentSongProvider.notifier)
-                    .setCurrentSong(updatedSong);
-              }
+                  // 현재 노래 상태 업데이트
+                  if (currentSong != null) {
+                    final updatedSong = Song(
+                      id: currentSong.id,
+                      title: currentSong.title,
+                      artist: currentSong.artist,
+                      album: currentSong.album,
+                      albumCoverUrl: currentSong.albumCoverUrl,
+                      releaseDate: currentSong.releaseDate,
+                      genre: currentSong.genre,
+                      hasFanChant: currentSong.hasFanChant,
+                      lyrics: currentSong.lyrics,
+                      isFavorite: !isFavorite, // 상태 반전
+                      recognizedAt: currentSong.recognizedAt,
+                    );
+                    ref
+                        .read(currentSongProvider.notifier)
+                        .setCurrentSong(updatedSong);
+                  }
 
-              // 찜 목록 프로바이더 갱신
-              ref.invalidate(favoriteSongsProvider);
-            },
-            icon: Icon(
-              isFavorite ? FlutterRemix.heart_fill : FlutterRemix.heart_line,
-              color: isFavorite ? Colors.red : AppColors.textLight,
-            ),
+                  // 찜 목록 프로바이더 갱신
+                  ref.invalidate(favoriteSongsProvider);
+                },
+                icon: Icon(
+                  isFavorite
+                      ? FlutterRemix.heart_fill
+                      : FlutterRemix.heart_line,
+                  color: isFavorite ? Colors.red : AppColors.textLight,
+                ),
+                tooltip: '찜하기',
+              ),
+            ],
           ),
         ],
       ),
@@ -536,6 +550,23 @@ class _SongDetailScreenState extends ConsumerState<SongDetailScreen> {
                         ),
                       ],
                     ),
+                  ),
+                  // 전체화면 버튼
+                  IconButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              FullScreenLyricsScreen(song: widget.song),
+                        ),
+                      );
+                    },
+                    icon: const Icon(
+                      FlutterRemix.fullscreen_line,
+                      color: AppColors.textLight,
+                    ),
+                    tooltip: '전체화면',
                   ),
                 ],
               ),
