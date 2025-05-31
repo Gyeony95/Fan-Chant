@@ -5,6 +5,7 @@ import 'package:fan_chant/src/core/theme/app_dimensions.dart';
 import 'package:fan_chant/src/core/theme/text_styles.dart';
 import 'package:fan_chant/src/features/song_recognition/screens/song_recognition_screen.dart';
 import 'package:fan_chant/src/features/favorites/screens/favorites_screen.dart';
+import 'package:fan_chant/src/features/fan_chant_list/screens/fan_chant_list_screen.dart';
 import 'package:flutter_remix/flutter_remix.dart';
 
 /// 선택된 탭 인덱스를 관리하는 프로바이더
@@ -26,6 +27,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   // 페이지 목록 - 미리 생성하여 재사용
   final List<Widget> _pages = [
     const SongRecognitionScreen(),
+    const FanChantListScreen(),
     const FavoritesScreen(),
   ];
 
@@ -45,7 +47,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   Widget build(BuildContext context) {
     // 현재 선택된 탭 인덱스
     final selectedTab = ref.watch(selectedTabProvider);
-    
+
     // PageStorage에서 사용할 키
     final pageStorageBucket = PageStorageBucket();
 
@@ -90,12 +92,20 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               onTap: () => _onTabTapped(0),
             ),
 
+            // 응원법 탭
+            _buildBottomNavItem(
+              FlutterRemix.music_2_line,
+              '응원법',
+              isSelected: selectedTab == 1,
+              onTap: () => _onTabTapped(1),
+            ),
+
             // 찜 탭
             _buildBottomNavItem(
               FlutterRemix.heart_line,
               '찜',
-              isSelected: selectedTab == 1,
-              onTap: () => _onTabTapped(1),
+              isSelected: selectedTab == 2,
+              onTap: () => _onTabTapped(2),
             ),
           ],
         ),

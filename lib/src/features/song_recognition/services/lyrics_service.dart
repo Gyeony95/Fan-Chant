@@ -82,6 +82,31 @@ class LyricsService {
     }
   }
 
+  /// 모든 응원법 가이드 노래 로드
+  Future<List<Song>> loadAllSongs() async {
+    try {
+      // 사용 가능한 모든 가사 ID 가져오기
+      final lyricsIds = await getAllAvailableLyricsIds();
+      final List<Song> songs = [];
+
+      // 각 ID에 대해 노래 정보 로드
+      for (final id in lyricsIds) {
+        final song = await loadSongByAppleMusicId(id);
+        if (song != null && song.hasFanChant) {
+          songs.add(song);
+        }
+      }
+
+      // 제목순으로 정렬
+      songs.sort((a, b) => a.title.compareTo(b.title));
+
+      return songs;
+    } catch (e) {
+      print('모든 노래 로드 오류: $e');
+      return [];
+    }
+  }
+
   /// 캐시 초기화
   void clearCache() {
     _lyricsCache.clear();
