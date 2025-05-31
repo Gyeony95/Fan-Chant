@@ -7,7 +7,7 @@
   "albumCoverUrl": "https://is1-ssl.mzstatic.com/image/thumb/Music114/v4/8a/2a/fb/8a2afbb2-728b-f160-8210-ba43146e9d83/cover-_DS.jpg/800x800bb.jpg",
   "genre": "K-Pop",
   "hasFanChant": true,
-  "guideLink": "",
+  "guideLink": "https://www.youtube.com/watch?v=jO6IJeZHFYk&list=PLo5pqeRcJzOjs-AslyJmWOrYx-AZnmYWK&index=4&ab_channel=%5B%EA%BD%83%EB%B3%B4%EB%8B%A4%EC%95%84%EC%9D%B4%EC%9C%A0%5D",
   "lyrics": [
     {
       "text": "Hi there 인사해 호들갑 없이",
@@ -22,13 +22,13 @@
       "endTime": 15
     },
     {
-      "text": "스킨십은 사양할게요 back off back off",
+      "text": "스킨십은 사양할게요 [both:back off back off]",
       "type": "artist",
       "startTime": 15,
       "endTime": 18
     },
     {
-      "text": "이대로 좋아요 balance balance",
+      "text": "이대로 좋아요 [both:balance balance]",
       "type": "artist",
       "startTime": 18,
       "endTime": 22
@@ -46,13 +46,13 @@
       "endTime": 28
     },
     {
-      "text": "탐색하는 불빛 scanner scanner",
+      "text": "탐색하는 불빛 [both:scanner scanner]",
       "type": "artist",
       "startTime": 28,
       "endTime": 31
     },
     {
-      "text": "오늘은 몇 점인가요? jealous jealous",
+      "text": "오늘은 몇 점인가요? [both:jealous jealous]",
       "type": "artist",
       "startTime": 31,
       "endTime": 35
@@ -64,74 +64,80 @@
       "endTime": 38
     },
     {
-      "text": "기분을 알 수 없는 저 표정은 뭐람?",
+      "text": "[fan:아]기분을 알 수 없는 저 표정은 뭐람?",
       "type": "artist",
       "startTime": 38,
       "endTime": 41
     },
     {
-      "text": "태가 달라진 건 아마 스트레스 때문인가?",
+      "text": "[fan:이]태가 달라진 건 아마 스트레스 때문인가?",
       "type": "artist",
       "startTime": 41,
       "endTime": 45
     },
     {
-      "text": "걱정이야 쟤도 참",
+      "text": "[fan:유]걱정이야 쟤도 참",
       "type": "artist",
       "startTime": 45,
       "endTime": 47
     },
     {
-      "text": "Yellow C A R D",
-      "type": "fan",
+      "text": "Yellow C A R D [fan:(beep beep)]",
+      "type": "artist",
       "startTime": 47,
       "endTime": 50
     },
     {
-      "text": "이 선 넘으면 침범이야 beep",
+      "text": "이 선 넘으면 침범이야 beep [fan:(beep beep)]",
       "type": "artist",
       "startTime": 50,
       "endTime": 53
     },
     {
-      "text": "매너는 여기까지 it's ma ma ma mine",
+      "text": "매너는 여기까지 it's [both:ma ma ma mine]",
       "type": "artist",
       "startTime": 53,
       "endTime": 57
     },
     {
-      "text": "Please keep the la la la line",
-      "type": "fan",
+      "text": "Please keep the [both:la la la line]",
+      "type": "artist",
       "startTime": 57,
       "endTime": 60
     },
     {
-      "text": "Hello stuP I D",
-      "type": "fan",
+      "text": "Hello stuP I D [fan:(beep beep)]",
+      "type": "artist",
       "startTime": 60,
       "endTime": 63
     },
     {
-      "text": "그 선 넘으면 정색이야 beep",
+      "text": "그 선 넘으면 정색이야 beep [fan:(beep beep)]",
       "type": "artist",
       "startTime": 63,
       "endTime": 66
     },
     {
-      "text": "Stop it 거리 유지해 cause we don't know know know know",
+      "text": "Stop it 거리 유지해 cause we don't [both:know know know know]",
       "type": "artist",
       "startTime": 66,
       "endTime": 71
     },
     {
-      "text": "Comma we don't owe owe owe owe",
-      "type": "fan",
+      "text": "Comma we don't [both:owe owe owe owe]",
+      "type": "artist",
       "startTime": 71,
       "endTime": 74
     },
     {
       "text": "(anything)",
       "type": "artist",
+      "startTime": 74,
+      "endTime": 79
+    },
+    {
+      "text": "(아.이.유.삐.삐)",
+      "type": "fan",
       "startTime": 74,
       "endTime": 79
     },
@@ -148,13 +154,13 @@
       "endTime": 85
     },
     {
-      "text": "정중히 사양할게요 not my business",
+      "text": "정중히 사양할게요 [both:not my business]",
       "type": "artist",
       "startTime": 85,
       "endTime": 88
     },
     {
-      "text": "이대로 좋아요 talk talkless",
+      "text": "이대로 좋아요 [both:talk talkless]",
       "type": "artist",
       "startTime": 88,
       "endTime": 92
@@ -166,19 +172,19 @@
       "endTime": 96
     },
     {
-      "text": "I'm sure you're gonna say \"my gosh\"",
+      "text": "I'm sure you're gonna say \"my [both:gosh]\"",
       "type": "artist",
       "startTime": 96,
       "endTime": 98
     },
     {
-      "text": "바빠지는 눈빛 checki cheking",
+      "text": "바빠지는 눈빛 [both:checki cheking]",
       "type": "artist",
       "startTime": 98,
       "endTime": 101
     },
     {
-      "text": "매일 틀린 그림 찾기 hash tagging",
+      "text": "매일 틀린 그림 찾기 [both:hash tagging]",
       "type": "artist",
       "startTime": 101,
       "endTime": 105
@@ -190,68 +196,68 @@
       "endTime": 108
     },
     {
-      "text": "다들 수군대는 걸 자긴 아나 몰라",
+      "text": "[fan:아]다들 수군대는 걸 자긴 아나 몰라",
       "type": "artist",
       "startTime": 108,
       "endTime": 111
     },
     {
-      "text": "요새 말이 많은 걔랑 어울린다나?",
+      "text": "[fan:이]요새 말이 많은 걔랑 어울린다나?",
       "type": "artist",
       "startTime": 111,
       "endTime": 115
     },
     {
-      "text": "문제야 쟤도 참",
+      "text": "[fan:유]문제야 쟤도 참",
       "type": "artist",
       "startTime": 115,
       "endTime": 117
     },
     {
-      "text": "Yellow C A R D",
-      "type": "fan",
+      "text": "Yellow C A R D[fan:(beep beep)]",
+      "type": "artist",
       "startTime": 117,
       "endTime": 120
     },
     {
-      "text": "이 선 넘으면 침범이야 beep",
+      "text": "이 선 넘으면 침범이야 beep[fan:(beep beep)]",
       "type": "artist",
       "startTime": 120,
       "endTime": 123
     },
     {
-      "text": "매너는 여기까지 it's ma ma ma mine",
+      "text": "매너는 여기까지 it's [both:ma ma ma mine]",
       "type": "artist",
       "startTime": 123,
       "endTime": 127
     },
     {
-      "text": "Please keep the la la la line",
-      "type": "fan",
+      "text": "Please keep the [both:la la la line]",
+      "type": "artist",
       "startTime": 127,
       "endTime": 130
     },
     {
-      "text": "Hello stuP I D",
-      "type": "fan",
+      "text": "Hello stuP I D[fan:(beep beep)]",
+      "type": "artist",
       "startTime": 130,
       "endTime": 133
     },
     {
-      "text": "그 선 넘으면 정색이야 beep",
+      "text": "그 선 넘으면 정색이야 beep[fan:(beep beep)]",
       "type": "artist",
       "startTime": 133,
       "endTime": 136
     },
     {
-      "text": "Stop it 거리 유지해 cause we don't know know know know",
+      "text": "Stop it 거리 유지해 cause we don't [both:know know know know]",
       "type": "artist",
       "startTime": 136,
       "endTime": 141
     },
     {
-      "text": "Comma we don't owe owe owe owe (anything)",
-      "type": "fan",
+      "text": "Comma we don't [both:owe owe owe owe] (anything)",
+      "type": "artist",
       "startTime": 141,
       "endTime": 144
     },
@@ -268,8 +274,8 @@
       "endTime": 150
     },
     {
-      "text": "I don't believe it",
-      "type": "fan",
+      "text": "I [both:don't believe it]",
+      "type": "artist",
       "startTime": 150,
       "endTime": 151
     },
@@ -286,19 +292,19 @@
       "endTime": 156
     },
     {
-      "text": "I don't believe it",
-      "type": "fan",
+      "text": "I [both:don't believe it]",
+      "type": "artist",
       "startTime": 156,
       "endTime": 158
     },
     {
-      "text": "깜빡이 켜 교양이 없어 너 knock knock knock",
+      "text": "깜빡이 켜 교양이 없어 [both:너 knock knock knock]",
       "type": "artist",
       "startTime": 158,
       "endTime": 162
     },
     {
-      "text": "Enough 더 상대 안 해 block block block block block",
+      "text": "[both:Enough] 더 상대 안 해 [both:block block block block block]",
       "type": "artist",
       "startTime": 162,
       "endTime": 165
@@ -311,66 +317,66 @@
     },
     {
       "text": "Repeat repeat",
-      "type": "fan",
+      "type": "both",
       "startTime": 168,
       "endTime": 170
     },
     {
-      "text": "참 쉽지 right",
+      "text": "참 쉽지 right[fan:(함성)]",
       "type": "artist",
       "startTime": 170,
       "endTime": 172
     },
     {
-      "text": "Yellow C A R D",
-      "type": "fan",
+      "text": "Yellow C A R D[fan:(beep beep)]",
+      "type": "artist",
       "startTime": 172,
       "endTime": 175
     },
     {
-      "text": "이 선 넘으면 침범이야 beep",
+      "text": "이 선 넘으면 침범이야 beep[fan:(beep beep)]",
       "type": "artist",
       "startTime": 175,
       "endTime": 178
     },
     {
-      "text": "매너는 여기까지 it's ma ma ma mine",
+      "text": "매너는 여기까지 it's [both:ma ma ma mine]",
       "type": "artist",
       "startTime": 178,
       "endTime": 182
     },
     {
-      "text": "Please keep the la la la line",
-      "type": "fan",
+      "text": "Please keep the [both:la la la line]",
+      "type": "artist",
       "startTime": 182,
       "endTime": 185
     },
     {
-      "text": "Hello stuP I D",
-      "type": "fan",
+      "text": "Hello stuP I D[fan:(beep beep)]",
+      "type": "artist",
       "startTime": 185,
       "endTime": 188
     },
     {
-      "text": "그 선 넘으면 정색이야 beep",
+      "text": "그 선 넘으면 정색이야 beep[fan:(beep beep)]",
       "type": "artist",
       "startTime": 188,
       "endTime": 191
     },
     {
-      "text": "Stop it 거리 유지해 cause we don't know know know know",
+      "text": "Stop it 거리 유지해 cause we don't [both:know know know know]",
       "type": "artist",
       "startTime": 191,
       "endTime": 196
     },
     {
-      "text": "Comma we don't owe owe owe owe",
-      "type": "fan",
+      "text": "Comma we don't [both:owe owe owe owe]",
+      "type": "artist",
       "startTime": 196,
       "endTime": 199
     },
     {
-      "text": "(anything)",
+      "text": "(anything)[fan:(함성)]",
       "type": "artist",
       "startTime": 199,
       "endTime": 202
