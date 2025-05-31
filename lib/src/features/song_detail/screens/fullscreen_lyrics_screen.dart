@@ -641,43 +641,20 @@ class _FullScreenLyricsScreenState
             ),
           );
         } else if (component is FanChantComponent) {
-          // 팬 응원 컴포넌트
-          return Container(
-            margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            decoration: BoxDecoration(
-              color: component.type == LyricType.fan
-                  ? AppColors.secondary.withOpacity(isActive ? 0.9 : 0.8)
-                  : AppColors.primary.withOpacity(isActive ? 0.9 : 0.8),
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(
+          // 팬 응원 컴포넌트 - 단순 텍스트 색상만 변경
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
+            child: Text(
+              component.text,
+              style: TextStyle(
                 color: component.type == LyricType.fan
-                    ? AppColors.secondary
-                    : AppColors.primary,
-                width: isActive ? 2 : 1.5, // 테두리로 활성화 표시
+                    ? AppColors.secondary // 팬 응원은 secondary 색상
+                    : AppColors.primary, // both는 primary 색상
+                fontSize: 26, // 고정 크기 (전체화면용)
+                fontWeight: FontWeight.w700, // 응원 부분은 항상 굵게
+                height: 1.4, // 줄간격 고정
               ),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(
-                  component.type == LyricType.fan
-                      ? Icons.mic_external_on
-                      : Icons.people,
-                  size: 18,
-                  color: Colors.white,
-                ),
-                const SizedBox(width: 8),
-                Text(
-                  component.text,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w700,
-                    fontSize: 16, // 고정 크기
-                    height: 1.2,
-                  ),
-                ),
-              ],
+              textAlign: TextAlign.center,
             ),
           );
         }
