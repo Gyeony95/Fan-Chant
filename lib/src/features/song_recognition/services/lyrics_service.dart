@@ -29,9 +29,26 @@ class LyricsService {
       // 가사 정보 파싱
       final List<dynamic> lyricsJson = jsonData['lyrics'] ?? [];
       final List<LyricLine> lyrics = lyricsJson.map((lyric) {
+        final typeString = lyric['type'];
+        LyricType lyricType;
+
+        switch (typeString) {
+          case 'artist':
+            lyricType = LyricType.artist;
+            break;
+          case 'fan':
+            lyricType = LyricType.fan;
+            break;
+          case 'both':
+            lyricType = LyricType.both;
+            break;
+          default:
+            lyricType = LyricType.artist; // 기본값
+        }
+
         return LyricLine(
           text: lyric['text'],
-          type: lyric['type'] == 'artist' ? LyricType.artist : LyricType.fan,
+          type: lyricType,
           startTime: lyric['startTime'],
           endTime: lyric['endTime'],
           isHighlighted: lyric['isHighlighted'] ?? false,

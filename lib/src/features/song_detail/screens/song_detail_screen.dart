@@ -474,7 +474,7 @@ class _SongDetailScreenState extends ConsumerState<SongDetailScreen> {
       onNotification: _onScrollNotification,
       child: ShaderMask(
         shaderCallback: (Rect rect) {
-          return LinearGradient(
+          return const LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
@@ -483,7 +483,7 @@ class _SongDetailScreenState extends ConsumerState<SongDetailScreen> {
               Colors.white,
               Colors.transparent
             ],
-            stops: const [0.0, 0.1, 0.9, 1.0],
+            stops: [0.0, 0.1, 0.9, 1.0],
           ).createShader(rect);
         },
         blendMode: BlendMode.dstIn,
@@ -506,8 +506,9 @@ class _SongDetailScreenState extends ConsumerState<SongDetailScreen> {
   /// 애플 뮤직 스타일 가사 아이템
   Widget _buildAppleMusicLyricItem(LyricLine lyric, int index,
       {bool isActive = false}) {
-    // 팬 응원법인 경우 특별한 스타일 적용
+    // 가사 타입별 스타일 설정
     final isFanChant = lyric.type == LyricType.fan;
+    final isBothChant = lyric.type == LyricType.both;
 
     return GestureDetector(
       onTap: () {
@@ -534,25 +535,36 @@ class _SongDetailScreenState extends ConsumerState<SongDetailScreen> {
               ? 0.0
               : isFanChant
                   ? 20.0
-                  : 10.0,
+                  : isBothChant
+                      ? 10.0
+                      : 10.0,
         ),
         padding: EdgeInsets.symmetric(
           vertical: 10.0,
-          horizontal: isFanChant ? 14.0 : 8.0,
+          horizontal: isFanChant ? 14.0 : isBothChant ? 12.0 : 8.0,
         ),
         decoration: BoxDecoration(
           color: isFanChant
               ? AppColors.secondary.withOpacity(isActive ? 0.3 : 0.1)
-              : isActive
-                  ? Colors.white.withOpacity(0.15)
-                  : Colors.transparent,
-          borderRadius: BorderRadius.circular(isFanChant ? 24 : 12),
+              : isBothChant
+                  ? AppColors.primary.withOpacity(isActive ? 0.2 : 0.08)
+                  : isActive
+                      ? Colors.white.withOpacity(0.15)
+                      : Colors.transparent,
+          borderRadius: BorderRadius.circular(
+            isFanChant ? 24 : isBothChant ? 16 : 12,
+          ),
           border: isFanChant
               ? Border.all(
                   color: AppColors.secondary.withOpacity(isActive ? 0.6 : 0.3),
                   width: 1,
                 )
-              : null,
+              : isBothChant
+                  ? Border.all(
+                      color: AppColors.primary.withOpacity(isActive ? 0.4 : 0.2),
+                      width: 1,
+                    )
+                  : null,
         ),
         child: Row(
           children: [
@@ -562,7 +574,24 @@ class _SongDetailScreenState extends ConsumerState<SongDetailScreen> {
                 size: 16,
                 color: Colors.white.withOpacity(isActive ? 0.9 : 0.5),
               ),
-            if (isFanChant) const SizedBox(width: 8),
+            if (isBothChant)
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    Icons.people,
+                    size: 16,
+                    color: Colors.white.withOpacity(isActive ? 0.9 : 0.6),
+                  ),
+                  const SizedBox(width: 4),
+                  Icon(
+                    Icons.mic,
+                    size: 14,
+                    color: Colors.white.withOpacity(isActive ? 0.9 : 0.6),
+                  ),
+                ],
+              ),
+            if (isFanChant || isBothChant) const SizedBox(width: 8),
             Expanded(
               child: AnimatedDefaultTextStyle(
                 duration: const Duration(milliseconds: 300),
@@ -571,9 +600,15 @@ class _SongDetailScreenState extends ConsumerState<SongDetailScreen> {
                         color: Colors.white.withOpacity(isActive ? 0.9 : 0.6),
                         fontSize: isActive ? 16 : 14,
                       )
-                    : isActive
-                        ? AppTextStyles.appleMusicActiveLyric
-                        : AppTextStyles.appleMusicInactiveLyric,
+                    : isBothChant
+                        ? AppTextStyles.appleMusicActiveLyric.copyWith(
+                            color: Colors.white.withOpacity(isActive ? 0.95 : 0.7),
+                            fontSize: isActive ? 20 : 16,
+                            fontWeight: FontWeight.w800,
+                          )
+                        : isActive
+                            ? AppTextStyles.appleMusicActiveLyric
+                            : AppTextStyles.appleMusicInactiveLyric,
                 textAlign: isFanChant ? TextAlign.left : TextAlign.center,
                 child: Text(
                   lyric.text,

@@ -130,6 +130,8 @@ class LyricTypeAdapter extends TypeAdapter<LyricType> {
         return LyricType.artist;
       case 1:
         return LyricType.fan;
+      case 2:
+        return LyricType.both;
       default:
         return LyricType.artist;
     }
@@ -143,6 +145,9 @@ class LyricTypeAdapter extends TypeAdapter<LyricType> {
         break;
       case LyricType.fan:
         writer.writeByte(1);
+        break;
+      case LyricType.both:
+        writer.writeByte(2);
         break;
     }
   }

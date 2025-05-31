@@ -86,6 +86,10 @@ enum LyricType {
   /// 팬이 부르는 파트
   @HiveField(1)
   fan,
+
+  /// 가수와 팬이 함께 부르는 파트
+  @HiveField(2)
+  both,
 }
 
 /// 가사 한 줄을 표현하는 클래스
