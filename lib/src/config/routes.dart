@@ -14,7 +14,7 @@ class AppRoutes {
 
   /// 앱의 라우트 정의
   static Map<String, WidgetBuilder> get routes => {
-        recognitionFailed: (context) => const Center(child: Text('인식 실패')),
+        recognitionFailed: (context) => const Material(child: Center(child: Text('인식 실패'))),
       };
 
   /// 노래 상세 화면으로 이동
